@@ -1,20 +1,20 @@
 -- See Copyright Notice in license.html
--- $Id: lom.lua,v 1.2 2004-03-24 19:12:36 tomas Exp $
+-- $Id: lom.lua,v 1.3 2004-09-17 15:51:58 tomas Exp $
 
+if string.find (_VERSION, "Lua 5.0") and not package then
+	if not LUA_PATH then
+		LUA_PATH = os.getenv"LUA_PATH" or "/usr/local/share/lua/5.0/?.lua;/usr/local/share/lua/5.0/?/?.lua"
+	end
+	require"compat-5.1"
+	package.cpath = os.getenv"LUA_CPATH" or "/usr/local/lib/lua/5.0/?.dylib;/usr/local/lib/lua/5.0/lib?.dylib"
+end
 require "lxp"
 
 local tinsert, tremove, getn = table.insert, table.remove, table.getn
 local assert, type, print = assert, type, print
 local lxp = lxp
 
-local Public = {}
-setmetatable(Public, {__newindex == function (n)
-  error("undeclared variable "..n, 2)
-end})
-
-lom = Public
-
-setfenv(1, Public)
+module (arg and arg[1])
 
 local function starttag (p, tag, attr)
   local stack = p:getcallbacks().stack

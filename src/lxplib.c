@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.3 2003-12-02 14:56:28 tomas Exp $
+** $Id: lxplib.c,v 1.4 2004-09-17 15:51:58 tomas Exp $
 ** LuaExpat
 ** See Copyright Notice in license.html
 */
@@ -509,11 +509,32 @@ static const struct luaL_reg lxp_funcs[] = {
 
 
 int luaopen_lxp (lua_State *L) {
+  const char *name;
+  int lxp;
   luaL_newmetatable(L, ParserType);
+  lxp = lua_gettop(L);
   lua_pushliteral(L, "__index");
   lua_pushvalue(L, -2);
   lua_rawset(L, -3);
   luaL_openlib (L, NULL, lxp_meths, 0);
   luaL_openlib (L, "lxp", lxp_funcs, 0);
+
+  /* if Lua 5.0 then Set package.loaded[name] = lxp */
+  if (lua_isstring(L, 1))
+    name = lua_tostring (L, 1);
+  else {
+    lua_getglobal (L, "arg");
+    lua_rawgeti (L, -1, 1);
+    name = lua_tostring (L, -1);
+    lua_pop (L, 2);
+  }
+  lua_getglobal (L, "package");
+  lua_pushliteral (L, "loaded");
+  lua_gettable (L, -2);
+  lua_pushstring (L, name);
+  lua_pushvalue (L, lxp);
+  lua_settable (L, -3); /* package.loaded[name] = lxp */
+  lua_pop (L, 2);
+
   return 1;
 }

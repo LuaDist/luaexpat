@@ -28,7 +28,7 @@ liblxp.so : lxplib.o
 	ld -o liblxp.so -shared lxplib.o -lexpat
 
 liblxp.dylib : lxplib.o
-	gcc -o liblxp.dylib -dynamiclib lxplib.o -lexpat -llua.5.0 -llualib.5.0
+	gcc -o liblxp.dylib -dynamiclib lxplib.o -lexpat -llua-5.0 -llualib-5.0
 
 clean:
 	rm -f liblxp.so liblxp.dylib lxplib.o
