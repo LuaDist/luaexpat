@@ -18,6 +18,7 @@ CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
 
 VERSION= 1.0b
 PKG = luaexpat-$(VERSION)
+DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README makefile \
@@ -38,9 +39,11 @@ compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 clean:
 	rm -f liblxp.so liblxp.dylib lxplib.o
 
-dist:
-	mkdir $(PKG)
-	cp $(SRCS) $(PKG)
-	tar -czf $(TAR_FILE) $(PKG)
-	zip -lq $(ZIP_FILE) $(PKG)/*
-	rm -rf $(PKG)
+dist: dist_dir
+	tar -czf $(TAR_FILE) $(DIST_DIR)
+	zip -lq $(ZIP_FILE) $(DIST_DIR)/*
+	rm -rf $(DIST_DIR)
+
+dist_dir:
+	mkdir $(DIST_DIR)
+	cp $(SRCS) $(DIST_DIR)
