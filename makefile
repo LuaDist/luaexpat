@@ -12,6 +12,7 @@ CWARNS = -Wall -pedantic \
 
 COMPAT_DIR= ../compat
 LUA_LIB_DIR= /usr/local/lib/lua/5.0
+LUA_DIR= /usr/local/share/lua/5.0
 
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
    -I$(COMPAT_DIR) -L./expat/xmlparse
@@ -41,6 +42,8 @@ compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 install:
 	mkdir -p $(LUA_LIB_DIR)
 	cp lib* lxp.* $(LUA_LIB_DIR)
+	mkdir -p $(LUA_DIR)
+	cp lom.lua $(LUA_DIR)
 
 clean:
 	rm -f liblxp.so liblxp.dylib lxplib.o
