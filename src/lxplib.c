@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.7 2004-11-17 14:19:03 tomas Exp $
+** $Id: lxplib.c,v 1.8 2004-11-17 14:20:02 tomas Exp $
 ** LuaExpat
 ** See Copyright Notice in license.html
 */
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "expat.h"
+#include "xmlparse.h"
 
 #include "lua.h"
 #include "lauxlib.h"
