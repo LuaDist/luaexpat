@@ -21,7 +21,7 @@ LIB_EXT= .so
 #LIB_EXT= .dylib
 LUA_LIBS= -llua-5.0 -llualib-5.0 -lm
 
-VERSION= 1.0
+VERSION= 1.0.1
 PKG = luaexpat-$(VERSION)
 DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz

@@ -1,13 +1,6 @@
 -- See Copyright Notice in license.html
--- $Id: lom.lua,v 1.3 2004-09-17 15:51:58 tomas Exp $
+-- $Id: lom.lua,v 1.4 2005-03-28 17:53:22 tomas Exp $
 
-if string.find (_VERSION, "Lua 5.0") and not package then
-	if not LUA_PATH then
-		LUA_PATH = os.getenv"LUA_PATH" or "/usr/local/share/lua/5.0/?.lua;/usr/local/share/lua/5.0/?/?.lua"
-	end
-	require"compat-5.1"
-	package.cpath = os.getenv"LUA_CPATH" or "/usr/local/lib/lua/5.0/?.dylib;/usr/local/lib/lua/5.0/lib?.dylib"
-end
 require "lxp"
 
 local tinsert, tremove, getn = table.insert, table.remove, table.getn

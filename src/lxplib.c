@@ -1,6 +1,6 @@
 /*
-** $Id: lxplib.c,v 1.9 2004-12-02 14:27:05 tomas Exp $
-** LuaExpat
+** $Id: lxplib.c,v 1.10 2005-03-28 17:53:22 tomas Exp $
+** LuaExpat: Lua bind for Expat library
 ** See Copyright Notice in license.html
 */
 
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "xmlparse.h"
+#include "expat.h"
 
 #include "lua.h"
 #include "lauxlib.h"
@@ -30,7 +30,7 @@ enum XPState {
 
 struct lxp_userdata {
   lua_State *L;
-  XML_Parser *parser;  /* associated expat parser */
+  XML_Parser parser;  /* associated expat parser */
   int tableref;  /* table with callbacks for this parser */
   enum XPState state;
   luaL_Buffer *b;  /* to concatenate sequences of cdata pieces */
@@ -41,7 +41,7 @@ typedef struct lxp_userdata lxp_userdata;
 
 static int reporterror (lxp_userdata *xpu) {
   lua_State *L = xpu->L;
-  XML_Parser *p = xpu->parser;
+  XML_Parser p = xpu->parser;
   lua_pushnil(L);
   lua_pushstring(L, XML_ErrorString(XML_GetErrorCode(p)));
   lua_pushnumber(L, XML_GetCurrentLineNumber(p));
@@ -382,10 +382,10 @@ static int lxp_make_parser (lua_State *L) {
 }
 
 
-static lxp_userdata *checkparser (lua_State *L, int index) {
-  lxp_userdata *xpu = (lxp_userdata *)luaL_checkudata(L, index, ParserType);
-  luaL_argcheck(L, xpu, index, "expat parser expected");
-  luaL_argcheck(L, xpu->parser, index, "parser is closed");
+static lxp_userdata *checkparser (lua_State *L, int idx) {
+  lxp_userdata *xpu = (lxp_userdata *)luaL_checkudata(L, idx, ParserType);
+  luaL_argcheck(L, xpu, idx, "expat parser expected");
+  luaL_argcheck(L, xpu->parser, idx, "parser is closed");
   return xpu;
 }
 
@@ -474,7 +474,7 @@ static int lxp_close (lua_State *L) {
 
 static int lxp_pos (lua_State *L) {
   lxp_userdata *xpu = checkparser(L, 1);
-  XML_Parser *p = xpu->parser;
+  XML_Parser p = xpu->parser;
   lua_pushnumber(L, XML_GetCurrentLineNumber(p));
   lua_pushnumber(L, XML_GetCurrentColumnNumber(p) + 1);
   lua_pushnumber(L, XML_GetCurrentByteIndex(p) + 1);
@@ -514,7 +514,7 @@ static const struct luaL_reg lxp_funcs[] = {
 */
 static void set_info (lua_State *L) {
 	lua_pushliteral (L, "_COPYRIGHT");
-	lua_pushliteral (L, "Copyright (C) 2003-2004 Kepler Project");
+	lua_pushliteral (L, "Copyright (C) 2003-2005 Kepler Project");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_DESCRIPTION");
 	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
@@ -523,7 +523,7 @@ static void set_info (lua_State *L) {
 	lua_pushliteral (L, "LuaExpat");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "1.0");
+	lua_pushliteral (L, "1.0.1");
 	lua_settable (L, -3);
 }
 
