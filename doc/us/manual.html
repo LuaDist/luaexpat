@@ -1,5 +1,5 @@
 <html>
-<!$Id: manual.html,v 1.5 2003-11-17 18:29:37 carregal Exp $>
+<!$Id: manual.html,v 1.6 2003-11-20 16:36:05 carregal Exp $>
 
 <head>
 <style type="text/css">
@@ -47,36 +47,42 @@ ul { list-style-type: disc };
   <dl><dt><h3>Constructor</h3>
     <dd>
     <h4>lxp.new(<em>callbacks [, separator]</em>)</h4>
-    <p>The parser is created by a call to the function <b>lxp.new</b> and it returns the created parser or raises an Lua error. It receives the callbacks table and optionally the parser separator character.</p>
+    <p>The parser is created by a call to the function <b>lxp.new</b> and it returns the created parser or raises an Lua error. It receives the callbacks table and optionally the parser <a href="#separator">separator character</a> used in the namespace expanded element names.</p>
   </dl>
 
 	<dl><dt><h3>Methods</h3>
 	  <dd>
+
 	  <h4>parser:close()</h4>
 				Closes the parser, freeing all memory associated with it. A call to parser:close() without a previous call to parser:parse() could result in an error.
+
 		<h4>parser:getbase()</h4>
 			 Return the base for resolving relative URIs.
+
 		<h4>parser:getcallbacks()</h4>
 			Returns the callbacks table.
+
 		<h4>parser:parse(s)</h4>
-			<p>Parse some more of the document. The string <em>s</em> cotains part (or perhaps all) of the document. When <em>s</em> is nil the document is closed but the parser is still active.</p>
-			<p>Returns a non nil value when the parser has been succesfull</p>
-			<p>When the parser finds an error it returns five results: nil, msg, line, col, pos</p>
-			<p>msg is the error message, the others are the line, column and absolute position of the error in the XML document.</p>
+			<p>Parse some more of the document. The string <em>s</em> cotains part (or perhaps all) of the document. When called without arguments the document is closed (but the parser still has to be closed).</p>
+			<p>The function returns a non nil value when the parser has been succesfull, and when the parser finds an error it returns five results: nil, <em>msg</em>, <em>line</em>, <em>col</em>, and <em>pos</em> where <em>msg</em> is the error message, and the others are the line, column and absolute position of the error in the XML document.</p>
+
 		<h4>parser:pos()</h4>
 			Returns three results: the current parsing line, column, and absolute position.
+
 		<h4>parser:setbase(base)</h4>
 		  Set the <em>base</em> to be used for resolving relative URIs in system identifiers.
+
 		<h4>parser:setencoding(encoding)</h4>
-			Set the <em>encoding</em> to be used by the parser. There are four built-in encodings: "<B>US-ASCII</B>", "<B>UTF-8</B>", "<B>UTF-16</B>", and "<B>ISO-8859-1</B>"
+			Set the <em>encoding</em> to be used by the parser. There are four built-in encodings, passed as strings: <B>"US-ASCII"</B>, <B>"UTF-8"</B>, <B>"UTF-16"</B>, and <B>"ISO-8859-1"</B>.
 	</dl>
 
 		<dl><dt><h3>Callbacks</h3>
 		<dd>
 		<p>The Lua callbacks define the handlers of the parser events. The use of a table in the parser constructor has some advantages over the registration of callbacks, since there are no need for callback manipulation funcionality in the API.</p>
-		<p>Another difference lies in the behaviour of the callbacks during the parsing itself. The callback table contains references to the functions that can be redefined at will, the only restriction is that only the callbacks present in the table at the creation time can be changed.</p>
+		<p>Another difference lies in the behaviour of the callbacks during the parsing itself. The callback table contains references to the functions that can be redefined at will, the only restriction is that only the callbacks present in the table at the creation time will be called.</p>
 		<p>The callbacks indexes are named after the equivalent Expat callbacks and are <em>CharacterData</em>, <em>Comment</em>, <em>Default</em>, <em>DefaultExpand</em>, <em>EndCDataSection</em>, <em>EndElement</em>, <em>EndNamespaceDecl</em>, <em>ExternalEntityRef</em>, <em>NotStandalone</em>, <em>NotationDecl</em>, <em>ProcessingInstruction</em>, <em>StartCDataSection</em>, <em>StartElement</em>, <em>StartNamespaceDecl</em>, and <em>UnparsedEntityDecl</em>.</p>
-		<p>Each of these indexes can be references to functions with specific signatures as seem below. The parser constructor also checks the presence of field called <em>_nonstrict</em> in the callback table. If <em>_nonstrict</em> is nil, only valid callback names are accepted as indexes in the table (Defaultexpanded would be considered an error for example). If <em>_nonstrict</em> is not nil any other fieldnames can be used.</p>
+		<p>Each of these indexes can be references to functions with specific signatures as seem below. The parser constructor also checks the presence of field called <em>_nonstrict</em> in the callback table. If <em>_nonstrict</em> is absent, only valid callback names are accepted as indexes in the table (Defaultexpanded would be considered an error for example). If <em>_nonstrict</em> is defined any other fieldnames can be used.</p>
+		<p>The callbacks can optionally be defined as <em>false</em> behaving thus as placeholders for future assignment of functions.</p>
 		<p>Every callback function receives as the first parameter the calling parser itself, thus allowing the same functions to be used for more than one parser for example.</p>
 
 			<dl><dt><h4>callbacks.CharacterData = function(parser, string)</h4>
@@ -140,8 +146,8 @@ ul { list-style-type: disc };
 			  <p>The attributes are listed by name (including the inherited ones) and by position (inherited attributes are not considered in the position list).</p>
 			  <p>As an example if the <em>book</em> element has attributes <em>author</em>, <em>title</em> and an optional <em>format</em> attribute (with "printed" as default value), <pre>&lt;book author="Ierusalimschy, Roberto" title="Programming in Lua"&gt;</pre> would be represented as</p>
         <pre>
-        {"Ierusalimschy, Roberto",
-         "Programming in Lua",
+        {[1] = "Ierusalimschy, Roberto",
+         [2] = "Programming in Lua",
          author = "Ierusalimschy, Roberto",
          format = "printed",
          title = "Programming in Lua"}
@@ -159,16 +165,17 @@ ul { list-style-type: disc };
 
 		</dl>
 
+    <a name="separator">
 		<dl><dt><h3>The separator character</h3>
 		<dd>
-		<p>The optional separator character in the parser constructor defines the character used in the namespace expanded element names. The separator character is optional (if not defined the parser will not handle namespaces) but if defined ot has to be different from the character '\0'.</p>
+		<p>The optional separator character in the parser constructor defines the character used in the namespace expanded element names. The separator character is optional (if not defined the parser will not handle namespaces) but if defined it has to be different from the character '\0'.</p>
 		</dl>
   </dl>
 
   <a name="examples">
 	<dl><dt><H2>Examples</H2>
 	<dd>
-  <p>The code excerpt below creates a parser with 2 callbacks defined and feeds a test string to it. The parsing of the test string triggers the callbacks, printing the results.</p>
+  <p>The code excerpt below creates a parser with 2 callbacks and feeds a test string to it. The parsing of the test string triggers the callbacks, printing the results.</p>
   <p><pre>
   local count = 0
   callbacks = {
@@ -186,6 +193,7 @@ ul { list-style-type: disc };
 
   for l in io.lines() do  -- iterate lines
     p:parse(l)            -- parses the line
+    p:parse("\n")         -- parses the end of line
   end
   p:parse()               -- finishes the document
   p:close()               -- closes the parser
@@ -230,7 +238,41 @@ ul { list-style-type: disc };
   * more text
   - elem1
   </pre>
+  <p>Another example would be the use of <em>false</em> as a placeholder for the callback. Suppose that we would like to print only the text associated with <em>elem2</em> elements and that the XML sample was</p>
+  <pre>
+  &lt;elem1&gt;
+    text
+    &lt;elem2&gt;
+      inside text
+    &lt;/elem2&gt;
+    more text
+  &lt;/elem1&gt;
+  </pre>
+  <p>We could define the new callback table as</p>
+  <pre>
+  callbacks = {
+    StarElement = function (parser, name)
+      if name == "elem2" then
+        callbacks.CharacterData = function (parser, string)   -- redefines CharacterData behaviour
+          io.write(string, "\n")
+        end
+      end
+    end,
 
+    EndElement = function (parser, name)
+      if name == "elem2" then
+        callbacks.CharacterData = false     -- restores placeholder
+      end
+    end,
+
+    CharacterData = false                   -- placeholder
+  }
+  </pre>
+  <p>The results would have been</p>
+  <pre>
+  inside text
+  </pre>
+  <p>Note that this example assumes no other elements are present inside elem2 tags.</p>
   </dl>
 <a name="contents"></a>
 <h2>Contents</h2>
