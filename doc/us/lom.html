@@ -1,72 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-<! See Copyright Notice in license.html>
-
 <head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
 <title>LuaExpat: Lua Object Model</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
 </head>
-
 <body bgcolor="#FFFFFF">
-
 <hr>
-
 <center>
-<table border=0 cellspacing=2 cellpadding=2>
-<tr><td align=center><a href="http://www.keplerproject.org/luaexpat">
-<img border=0 alt="LuaExpat logo" src="luaexpat.png"></a>
-<tr><td align=center><big><b>LuaExpat</b></big>
-<tr><td align=center valign=top>Lua Object Model
+<table border="0" cellspacing="2" cellpadding="2">
+<tr>
+<td align="center"><a href=
+"http://www.keplerproject.org/luaexpat"><img border="0" alt=
+"LuaExpat logo" src="luaexpat.png"></a> </td>
+</tr>
+
+<tr>
+<td align="center"><big><b>LuaExpat</b></big> </td>
+</tr>
+
+<tr>
+<td align="center" valign="top">Lua Object Model</td>
+</tr>
 </table>
 </center>
-<p>
 
-<center><small>
-<a href="index.html">home</a> &middot;
-<a href="#introduction">introduction</a> &middot;
-<a href="#characteristics">characteristics</a> &middot;
-<a href="#examples">examples</a>
-</small></center>
-<p>
+<center><small><a href="index.html">home</a> &middot; <a href=
+"#introduction">introduction</a> &middot; <a href=
+"#characteristics">characteristics</a> &middot; <a href=
+"#examples">examples</a></small></center>
 
 <hr>
-  <a name="introduction">
-	<dl><dt><H2>Introduction</H2>
-  <dd>
-  <p>Lua Object Model (LOM) is a representation of XML elements through Lua data types.  Currently it is not supposed to be 100% complete, but simple.</p>
-  <p>LuaExpat's distribution provides an implementation of LOM that gets a XML documenta (a string) and transforms it to a Lua table.  The only function exported is <b><code>lom.parse</code></b>.
-  </dl>
+<a name="introduction"></a> 
 
-  <a name="characteristics">
-	<dl><dt><H2>Characteristics</H2>
-  <dd>
-  <p>The model represents each XML element as a Lua table. A LOM table has three special characteristics:</p>
-  <ul>
-    <li>a special field called <b><code>tag</code></b> that holds the element's name;
-    <li>an optional field called <b><code>attr</code></b> that stores the element's attributes (see <a href="#attributes">attribute's section</a>); and
-    <li>the element's children are stored at the <em>array-part</em> of the table.  A child could be an ordinary string or another XML element that will be represented by a Lua table following these same rules.
-  </ul>
+<dl>
+<dd>
+<h2>Introduction</h2>
+</dd>
 
-  <a name="attributes"></a>
-  <dl><dt><h3>Attributes</h3>
-    <dd>
-    <p>The special field <b><code>attr</code></b> is a Lua table that stores the XML element's attributes as pairs <em>&lt;key&gt;=&lt;value&gt;</em>.  To assure an order (if necessary), the sequence of <em>key</em>s could be placed at the <em>array-part</em> of this same table.
-  </dl>
- </dl>
+<dd>
+<p>Lua Object Model (LOM) is a representation of XML elements
+through Lua data types. Currently it is not supposed to be 100%
+complete, but simple.</p>
 
+<p>LuaExpat's distribution provides an implementation of LOM that
+gets a XML documenta (a string) and transforms it to a Lua table.
+The only function exported is <b><code>lom.parse</code></b>.</p>
+</dd>
+</dl>
 
-  <a name="examples">
-	<dl><dt><H2>Examples</H2>
-	<dd>
-  <p>For a simple string like<pre>
-	s = [[&lt;abc a1="A1" a2="A2"&gt;inside tag `abc'&lt;/abc&gt;]]
-  </pre></p>
-  <p>A call like<pre>
-	tab = lom.parse (s))
-  </pre></p>
-  <p>Would result in a table equivalent to</p>
-  <pre>
+<a name="characteristics"></a> 
+
+<dl>
+<dd>
+<h2>Characteristics</h2>
+</dd>
+
+<dd>
+<p>The model represents each XML element as a Lua table. A LOM
+table has three special characteristics:</p>
+
+<ul>
+<li>a special field called <b><code>tag</code></b> that holds the
+element's name;</li>
+
+<li>an optional field called <b><code>attr</code></b> that stores
+the element's attributes (see <a href="#attributes">attribute's
+section</a>); and</li>
+
+<li>the element's children are stored at the <em>array-part</em> of
+the table. A child could be an ordinary string or another XML
+element that will be represented by a Lua table following these
+same rules.</li>
+</ul>
+
+<a name="attributes"></a> 
+
+<dl>
+<dd>
+<h3>Attributes</h3>
+</dd>
+
+<dd>
+<p>The special field <b><code>attr</code></b> is a Lua table that
+stores the XML element's attributes as pairs
+<em>&lt;key&gt;=&lt;value&gt;</em>. To assure an order (if
+necessary), the sequence of <em>key</em>s could be placed at the
+<em>array-part</em> of this same table.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+
+<a name="examples"></a> 
+
+<dl>
+<dd>
+<h2>Examples</h2>
+</dd>
+
+<dd>
+<p>For a simple string like</p>
+
+<pre>
+    s = [[&lt;abc a1="A1" a2="A2"&gt;inside tag `abc'&lt;/abc&gt;]]
+ 
+</pre>
+
+<br>
+<br>
+ 
+
+<p>A call like</p>
+
+<pre>
+    tab = lom.parse (s))
+ 
+</pre>
+
+<br>
+<br>
+ 
+
+<p>Would result in a table equivalent to</p>
+
+<pre>
 tab = {
         ["attr"] = {
                 [1] = "a1",
@@ -78,16 +138,27 @@ tab = {
         ["tag"] = "abc",
 }
 
-  </pre>
-  <p>Now an example with an element inside another one<pre>
+ 
+</pre>
+
+<p>Now an example with an element inside another one</p>
+
+<pre>
 tab = lom.parse(
 [[&lt;qwerty q1="q1" q2="q2"&gt;
     &lt;asdf&gt;some text&lt;/asdf&gt;
 &lt;/qwerty&gt;]]
 )
-  </pre></p>
-  <p>The results would have been a table equivalent to</p>
-  <pre>
+ 
+</pre>
+
+<br>
+<br>
+ 
+
+<p>The results would have been a table equivalent to</p>
+
+<pre>
 tab = {
         [1] = "\
         ",
@@ -107,35 +178,37 @@ tab = {
 ",
         ["tag"] = "qwerty",
 }
-  </pre>
-  <p>Note that even the <i>new-line</i> and <i>tab</i> characters are stored on the table.
-  </dl>
+ 
+</pre>
 
+<p>Note that even the <i>new-line</i> and <i>tab</i> characters are
+stored on the table.</p>
+</dd>
+</dl>
 
-<a name="contents"></a>
+<a name="contents"></a> 
+
 <h2>Contents</h2>
-<p>
+
 <ul>
-<li> <a href="#introduction">Introduction</a>
-<li> <a href="#characteristics">Characteristics</a>
-<li> <a href="#examples">Examples</a>
+<li><a href="#introduction">Introduction</a></li>
+
+<li><a href="#characteristics">Characteristics</a></li>
+
+<li><a href="#examples">Examples</a></li>
 </ul>
-</p>
 
+<br>
+<br>
+ 
 
-<p>
-<center><small>
-<a href="index.html">home</a> &middot;
-<a href="#introduction">Introduction</a> &middot;
-<a href="#characteristics">Characteristics</a> &middot;
-<a href="#examples">Examples</a>
-</small></center>
-<p>
+<center><small><a href="index.html">home</a> &middot; <a href=
+"#introduction">Introduction</a> &middot; <a href=
+"#characteristics">Characteristics</a> &middot; <a href=
+"#examples">Examples</a></small></center>
 
 <hr>
-<small>
-$Id: lom.html,v 1.1 2004-04-02 15:52:17 tomas Exp $
-</small>
-
+<small>$Id: lom.html,v 1.2 2004-11-22 17:37:57 carregal Exp $</small>
 </body>
 </html>
+
