@@ -17,8 +17,9 @@ LUA_INC= /usr/local/include/lua5
 
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I$(LUA_INC) \
    -I$(COMPAT_DIR) -L./expat/xmlparse
-#LIB_EXT= .so
-LIB_EXT= .dylib
+LIB_EXT= .so
+#LIB_EXT= .dylib
+LUA_LIBS= -llua-5.0 -llualib-5.0 -lm
 
 VERSION= 1.0
 PKG = luaexpat-$(VERSION)
@@ -36,7 +37,7 @@ liblxp.so : lxplib.o compat-5.1.o
 	ln -f -s liblxp.so lxp.so
 
 liblxp.dylib : lxplib.o compat-5.1.o
-	gcc -o liblxp.dylib -dynamiclib lxplib.o compat-5.1.o -lexpat -llua-5.0 -llualib-5.0
+	gcc -o liblxp.dylib -dynamiclib lxplib.o compat-5.1.o -lexpat $(LUA_LIBS)
 	ln -f -s liblxp.dylib lxp.dylib
 
 compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
