@@ -1,0 +1,144 @@
+<html>
+<!$Id: manual.html,v 1.1 2003-10-20 16:50:12 carregal Exp $>
+
+<head>
+<style type="text/css">
+ul { list-style-type: disc };
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<hr>
+
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.lua.org">
+<img border=0 alt="The Lua language" src="lua.png"></a>
+<tr><td align=center><big><b>LuaExpat Reference Manual</b></big>
+<tr><td align=center valign=top>XML Expat parsing for the Lua language
+</table>
+</center>
+<p>
+
+<center><small>
+<a href="index.html">home</a> &middot;
+<a href="#environment_object">environment</a> &middot;
+<a href="#connection_object">connection</a> &middot;
+<a href="#cursor_object">cursor</a> &middot;
+<a href="#postgres_extensions">extensions</a> &middot;
+<a href="#examples">example</a>
+</small></center>
+<p>
+
+<hr>
+
+	<H2>*****Introduction</H2>
+		LuaExpat is...
+	<H2>Parser objects</H2>
+<P>		LuaExpat bases all its operations on the concept of a parser object. A parser object is created with an optional table of callbacks, wich are responsible for the handling of the document parts. The document can be fed to the parser in pieces, and the parsing begins as soon as the parser receives some part of the document. The parsing of huge documents can benefit from this piece by piece operation.
+		The parser will assume the default behaviour for any non declared callbacks.
+		The parser is created by the call lxp.new(callbacks) that takes an optional table with the callbacks to be registered. The function lxp.new returns the created parser or raises an Lua error.
+</P>
+		<H3>Callbacks</H3>
+			The Lua callbacks define the handlers of the parser events
+			<H4>CharacterData(parser, string)</H4>
+				Receives the string corresponding to a XML CData chunk from a parser.
+			<H4>Comment(parser, string)</H4>
+				Receives the string corresponding to a XML Comment chunk from a parser.
+			<H4>Default(parser, string)</H4>
+				Receives the string correspondig to any characters in the document which wouldn't otherwise be handled. Using this handler has the side effect of turning off expansion of references to internally defined general entities. Instead these references are passed to the default handler.
+			<H4>DefaultExpand(parser, string)</H4>
+				Receives the string correspondig to any characters in the document which wouldn't otherwise be handled. Using this handler doesn't affect expansion of internal entity references.
+			<H4>EndCdataSection(parser, string)</H4>
+				Receives the string at the beginning of a CDATA section.
+			<H4>EndElement(parser, elementName)</H4>
+				Receives the element name of an ending XML element.
+			<H4>EndNamespaceDecl(parser, string)</H4>
+				Receives the string corresponding to the namespace after it closing. The handling of the end namespace is done after handling of the end tag for the element the namespace is associated with.
+			<H4>******ExternalEntityRef(parser, context, base, systemId, publicId)</H4>
+				Set an external entity reference handler. This handler is also called for processing an external DTD subset if parameter entity parsing is in effect. (See XML_SetParamEntityParsing ) ?The base parameter is the base to use for relative system identifiers. It is set by XML_SetBase and may be null. The public id parameter is the public id given in the entity declaration and may be null. The system id is the system identifier specified in the entity declaration and is never null. ?There are a couple of ways in which this handler differs from others. First, this handler returns an integer. A non-zero value should be returned for successful handling of the external entity reference. Returning a zero indicates failure, and causes the calling parser to return an XML_ERROR_EXTERNAL_ENTITY_HANDLING error. ?Second, instead of having userData as its first argument, it receives the parser that encountered the entity reference. This, along with the context parameter, may be used as arguments to a call to XML_ExternalEntityParserCreate. Using the returned parser, the body of the external entity can be recursively parsed.
+			<H4>NotStandalone(parser)</H4>
+				Set a handler that is called if the document is not "standalone". This happens when there is an external subset or a reference to a parameter entity, but does not have standalone set to "yes" in an XML declaration.
+			<H4>NotationDecl(parser, notationName, base, systemId, publicId)</H4>
+				Set a handler that receives notation declarations.
+			<H4>ProcessingInstruction(parser, target, data)</H4>
+				Set a handler for processing instructions. The target is the first word in the processing instruction. The data is the rest of the characters in it after skipping all whitespace after the initial word.
+			<H4>StartCdataSection(parser, string)</H4>
+				Receives the string at the end of a CDATA section.
+			<H4>StartElement(parser, elementName, attributes)</H4>
+				Receives the element name and attributes of a begining XML element. The attributes parameter is a Lua table with all the attribute names and values. The attribute table has an entry for every attribute with its name as an index, and an entry for every attribute with its position in the attribute list as an integer index.
+			<H4>StartNamespaceDecl(parser, string)</H4>
+				Receives the namespace string for a namespace declaration. Namespace declarations occur inside start tags. But the namespace declaration start handler is called before the start tag handler for each namespace declared in that start tag.
+			<H4>******UnparsedEntityDecl(parser, entityName, base, systemId, publicId, notationName)</H4>
+				Set a handler that receives declarations of unparsed entities. These are entity declarations that have a notation (NDATA) field: ?<!ENTITY logo SYSTEM "images/logo.gif" NDATA gif>?So for this example, the entityName would be "logo", the systemId would be "images/logo.gif" and notationName would be "gif". For this example the publicId parameter is null. The base parameter would be whatever has been set with XML_SetBase. If not set, it would be null.
+		<H2>Methods</H2>
+			<H3>parser:close()</H3>
+				Closes the parser, freeing all memory associated with it.
+			<H3>parser:getbase()</H3>
+				 Return the base for resolving relative URIs.
+			<H3>parser:getcallbacks()</H3>
+				Returns the callbacks table.
+			<H3>parser:parse(s)</H3>
+				Parse some more of the document. The string s cotains part (or perhaps all) of the document.
+			<H3>parser:pos()</H3>
+				Returns three results: the current parsing line, column, and absolute position.
+			<H3>parser:setbase(base)</H3>
+			  Set the base to be used for resolving relative URIs in system identifiers.
+			<H3>parser:setencoding(encoding)</H3>
+				Set the encoding to be used by the parser. There are four built-in encodings: US-ASCII, UTF-8, UTF-16, and ISO-8859-1
+	<H2>Example</H2>
+		<PRE>require "lxp"</PRE>
+		<PRE>p = lxp.new() --</PRE>
+
+<a name="contents"></a>
+<h2>Contents</h2>
+<p>
+<ul>
+<li> <a href="#introduction">Introduction</a>
+<li> <a href="#environment_object">Environment objects</a>
+  <ul>
+    <li> <a href="#env_close">close</a>
+    <li> <a href="#env_connect">connect</a>
+  </ul>
+<li> <a href="#connection_object">Connection object</a>
+  <ul>
+    <li> <a href="#conn_close">close</a>
+    <li> <a href="#conn_commit">commit</a>
+    <li> <a href="#conn_execute">execute</a>
+    <li> <a href="#conn_rollback">rollback</a>
+    <li> <a href="#conn_setautocommit">setautocommit</a>
+  </ul>
+<li> <a href="#cursor_object">Cursor objects</a>
+  <ul>
+    <li> <a href="#cur_close">close</a>
+    <li> <a href="#cur_fetch">fetch</a>
+    <li> <a href="#cur_colnames">getcolnames</a>
+    <li> <a href="#cur_coltypes">getcoltypes</a>
+  </ul>
+<li> <a href="#postgres_extensions">PostgreSQL extensions</a>
+<li> <a href="#mysql_extensions">MySQL extensions</a>
+<li> <a href="#examples">Example</a>
+</ul>
+</p>
+
+
+<p>
+<center><small>
+<a href="index.html">home</a> &middot;
+<a href="#environment_object">environment</a> &middot;
+<a href="#connection_object">connection</a> &middot;
+<a href="#cursor_object">cursor</a> &middot;
+<a href="#postgres_extensions">extensions</a> &middot;
+<a href="#examples">example</a>
+</small></center>
+<p>
+
+<hr>
+<small>
+Last modified on
+Wed Jul 23 17:43:57 BRT 2003
+</small>
+
+</body>
+</html>
