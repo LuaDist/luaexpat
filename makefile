@@ -21,7 +21,7 @@ ZIP_FILE= $(PKG).zip
 SRCS= README makefile \
 	lxplib.c lxplib.h lxp.lua \
 	test.lua \
-	index.html manual.html lua.png
+	index.html manual.html luaexpat.png
 
 
 liblxp.so : lxplib.o
