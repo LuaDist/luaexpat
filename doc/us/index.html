@@ -93,7 +93,16 @@ LuaExpat can be downloaded in source code from the following links: <p>
 <a name="installation"></a>
 <h2>Installation</h2>
 
-<p>LuaExpat is distributed as a set of C source files and a Lua script that loads the dynamic library (if the library is not statically linked to the application).</p>
+<p>LuaExpat is distributed as a set of C source files and a Lua script that loads the dynamic library (if the library is not statically linked to the application).
+Also, there is the file <code>lom.lua</code> that implements the
+Lua Object Model.
+</p>
+<p>
+The binary file produced by the compilation should be copied
+to the appropriate directory for libraries.
+The Lua files should be copied to a directory named <code>lxp</code>
+created in your <code>LUA_PATH</code>.
+</p>
 
 <a name="references"></a>
 <h2>References</h2>
@@ -139,7 +148,7 @@ Comments are welcome!
 
 <hr>
 <small>
-$Id: index.html,v 1.17 2004-01-12 10:42:34 tomas Exp $
+$Id: index.html,v 1.18 2004-03-24 18:54:09 tomas Exp $
 </small>
 
 </body>
