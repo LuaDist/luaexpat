@@ -1,5 +1,5 @@
 -- See Copyright Notice in license.html
--- $Id: lom.lua,v 1.1 2004-03-24 18:03:01 tomas Exp $
+-- $Id: lom.lua,v 1.2 2004-03-24 19:12:36 tomas Exp $
 
 require "lxp"
 
@@ -12,7 +12,7 @@ setmetatable(Public, {__newindex == function (n)
   error("undeclared variable "..n, 2)
 end})
 
-dom = Public
+lom = Public
 
 setfenv(1, Public)
 
