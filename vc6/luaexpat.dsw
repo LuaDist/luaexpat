@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "luaexpat_dll"=.\luaexpat_dll.dsp - Package Owner=<4>
+Project: "expat"="..\..\external-src\expat-1.95.8\lib\expat.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "luaexpat_static"=.\luaexpat_static.dsp - Package Owner=<4>
+Project: "luaexpat_dll"=.\luaexpat_dll.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
