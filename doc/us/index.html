@@ -73,6 +73,10 @@ as Lua 5.0.
 <a name=version>
 <h2>Current version</h2>
 <p>LuaExpat version 1.0 beta is available for download! It has been tested in Linux, Windows and MacOS X.</p>
+<p>Version 1.0 follows the
+<a href="http://www.keplerproject.org/compat">package proposal</a>
+for Lua 5.1
+(see section <a href="#installation">Installation</a> for more details).
 
 <a name=download>
 <h2>Download</h2>
@@ -80,14 +84,15 @@ as Lua 5.0.
 LuaExpat can be downloaded in source code from the following links: <p>
 
 <blockquote>
-<a href="luaexpat-1.0b.tar.gz">luaexpat-1.0b.tar.gz</a><br>
-<a href="luaexpat-1.0b.zip">luaexpat-1.0b.zip</a>
+<a href="luaexpat-1.0b2.tar.gz">luaexpat-1.0b2.tar.gz</a><br>
+<a href="luaexpat-1.0b2.zip">luaexpat-1.0b2.zip</a>
 </blockquote><p>
 
 <a name=new>
 <h2>What's new</h2>
 <p>
 <ul>
+  <li>[?/?/2004] Version 1.0 beta 2 released
   <li>[4/apr/2004] Version 1.0 beta released
   <li>[10/dec/2003] Version 1.0 alpha released
 </ul>
@@ -97,16 +102,26 @@ LuaExpat can be downloaded in source code from the following links: <p>
 <a name="installation"></a>
 <h2>Installation</h2>
 
-<p>LuaExpat is distributed as a set of C source files and a Lua script that loads the dynamic library (if the library is not statically linked to the application).
-Also, there is the file <code>lom.lua</code> that implements the
+<p>LuaExpat is distributed as a C source file which implements the library.
+There is also the file <code>lom.lua</code> that implements the
 Lua Object Model.
-</p>
-<p>
 The binary file produced by the compilation should be copied
 to the appropriate directory for libraries.
 The Lua files should be copied to a directory named <code>lxp</code>
 created in your <code>LUA_PATH</code>.
 </p>
+<p>LuaExpat follows the
+<a href="http://www.keplerproject.org/compat">package proposal</a>
+for Lua 5.1,
+therefore this package should be "installed".
+In other words,
+if you are using Lua 5.0,
+the files <tt>compat-5.1.c</tt> and <tt>compat-5.1.h</tt> must be used
+in the compilation and the file <tt>compat-5.1.lua</tt> must be installed
+in the <tt>LUA_PATH</tt>.
+If you are using Lua 5.1,
+nothing should be done.
+
 
 <a name="references"></a>
 <h2>References</h2>
@@ -152,7 +167,7 @@ Comments are welcome!
 
 <hr>
 <small>
-$Id: index.html,v 1.21 2004-07-09 16:20:31 tomas Exp $
+$Id: index.html,v 1.22 2004-11-03 10:51:40 tomas Exp $
 </small>
 
 </body>
