@@ -19,7 +19,7 @@ PKG = luaexpat-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README makefile \
-	lxplib.c lxp.lua \
+	lxplib.c lxplib.h lxp.lua \
 	test.lua \
 	index.html manual.html lua.png
 
