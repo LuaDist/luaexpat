@@ -1,0 +1,9 @@
+LIBRARY		lxp.dll
+
+DESCRIPTION "LuaExpat"
+
+VERSION 1.0a
+
+EXPORTS
+
+luaopen_lxp
