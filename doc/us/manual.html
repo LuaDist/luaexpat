@@ -1,5 +1,5 @@
 <html>
-<!$Id: manual.html,v 1.4 2003-11-17 18:22:51 carregal Exp $>
+<!$Id: manual.html,v 1.5 2003-11-17 18:29:37 carregal Exp $>
 
 <head>
 <style type="text/css">
@@ -21,12 +21,14 @@ ul { list-style-type: disc };
 
 <center><small>
 <a href="index.html">home</a> &middot;
-<a href="#examples">example</a>
+<a href="#introduction">Introduction</a> &middot;
+<a href="#parser">Parser Objects</a> &middot;
+<a href="#examples">Examples</a>
 </small></center>
 <p>
 
 <hr>
-
+  <a name="introduction">
 	<dl><dt><H2>Introduction</H2>
   <dd>
   <p>LuaExpat is a <a href="http://www.saxproject.org/">SAX</a> XML parser based on the <a href="http://jclark.com/xml/expat.html">Expat</a> library.  SAX is the <em>Simple API for XML</em> and allows programs to</p>
@@ -37,6 +39,7 @@ ul { list-style-type: disc };
   <p>With an event based API like SAX the XML document can be fed to the parser in pieces, and the parsing begins as soon as the parser receives some part of the document. LuaExpat reports parsing events (such as the start and end of elements) directly to the application through callbacks. The parsing of huge documents can benefit from this piece by piece operation.</p>
   </dl>
 
+  <a name="parser">
 	<dl><dt><H2>Parser objects</H2>
   <dd>
   <p>Usually SAX implementations bases all its operations on the concept of a parser that allows the registration of callback functions. LuaExpat offers the same functionality but uses a different registration method based on a table of callbacks. This table contains references to the callback functions, wich are responsible for the handling of the document parts. The parser will assume no behaviour for any non declared callbacks.</p>
@@ -162,7 +165,8 @@ ul { list-style-type: disc };
 		</dl>
   </dl>
 
-	<dl><dt><H2>Example</H2>
+  <a name="examples">
+	<dl><dt><H2>Examples</H2>
 	<dd>
   <p>The code excerpt below creates a parser with 2 callbacks defined and feeds a test string to it. The parsing of the test string triggers the callbacks, printing the results.</p>
   <p><pre>
@@ -233,7 +237,8 @@ ul { list-style-type: disc };
 <p>
 <ul>
 <li> <a href="#introduction">Introduction</a>
-<li> <a href="#examples">Example</a>
+<li> <a href="#parser">Parser Objects</a>
+<li> <a href="#examples">Examples</a>
 </ul>
 </p>
 
@@ -241,7 +246,9 @@ ul { list-style-type: disc };
 <p>
 <center><small>
 <a href="index.html">home</a> &middot;
-<a href="#examples">example</a>
+<a href="#introduction">Introduction</a> &middot;
+<a href="#parser">Parser Objects</a> &middot;
+<a href="#examples">Examples</a>
 </small></center>
 <p>
 
