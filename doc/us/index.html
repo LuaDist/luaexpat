@@ -1,5 +1,5 @@
 <html>
-<!$Id: index.html,v 1.4 2003-10-20 17:59:47 tomas Exp $>
+<!$Id: index.html,v 1.5 2003-11-14 20:28:01 carregal Exp $>
 
 <head>
 <style type="text/css">
@@ -43,12 +43,7 @@ ul { list-style-type: disc };
 <li> <a href=#installation>Installation</a>
 <li> <a href="manual.html">User's manual</a>
 	<ul>
-	<li> <a href="manual.html#introduction">******Introduction</a>
-	<li> <a href="manual.html#environment_object">Environment objects</a>
-	<li> <a href="manual.html#connection_object">Connection objects</a>
-	<li> <a href="manual.html#cursor_object">Cursor objects</a>
-	<li> <a href="manual.html#postgres_extensions">PostgreSQL extensions</a>
-	<li> <a href="manual.html#mysql_extensions">MySQL extensions</a>
+	<li> <a href="manual.html#introduction">Introduction</a>
 	<li> <a href="manual.html#examples">Examples</a>
 	</ul>
 <li> <a href=#hist>History</a>
@@ -58,12 +53,7 @@ ul { list-style-type: disc };
 
 <a name=over>
 <h2>Overview</h2>
-<p>LuaExpat is a XML parser based on the Expat XML parser. It allows Lua programs to:</p>
-<ul>
-<li> Process a XML document incrementally , thus being able to handle huge documents without memory penalties;
-<li> Register handler functions wich are called by the parser during the processing of the document, handling the document elements or text.
-</ul>
-
+<p>LuaExpat is a <a href="http://www.saxproject.org/">SAX</a> XML parser based on the <a href="http://jclark.com/xml/expat.html">Expat</a> library.
 
 <a name=version>
 <h2>Current version</h2>
@@ -81,8 +71,8 @@ LuaExpat can be downloaded in source code from the following links: <p>
 
 <a name=new>
 <h2>What's new</h2>
-<p>
-</p>
+<p>LuaExpat version 1.0 alpha is available for download! It has been tested in Linux, Windows and MacOS.</p>
+
 
 <a name="installation"></a>
 <h2>Installation</h2>
@@ -91,7 +81,8 @@ LuaExpat can be downloaded in source code from the following links: <p>
 
 <a name="references"></a>
 <h2>References</h2>
-<p>LuaExpat uses the Expat library (http://jclark.com/xml/expat.html). For details on the C API please refer also to (http://www.xml.com/pub/a/1999/09/expat/index.html?page=1).</p>
+<p>LuaExpat uses the <a href="http://jclark.com/xml/expat.html">Expat library</a>. For details on the C API please refer also to <a href="http://www.xml.com/pub/a/1999/09/expat/index.html?page=1">this article</a>.</p>
+<p>Expat uses <a href="http://www.saxproject.org/">SAX</a>.</p>
 
 <a name=hist>
 <h2>History</h2>

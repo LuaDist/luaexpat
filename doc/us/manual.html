@@ -1,5 +1,5 @@
 <html>
-<!$Id: manual.html,v 1.2 2003-10-20 17:50:51 tomas Exp $>
+<!$Id: manual.html,v 1.3 2003-11-14 20:28:01 carregal Exp $>
 
 <head>
 <style type="text/css">
@@ -21,23 +21,26 @@ ul { list-style-type: disc };
 
 <center><small>
 <a href="index.html">home</a> &middot;
-<a href="#environment_object">environment</a> &middot;
-<a href="#connection_object">connection</a> &middot;
-<a href="#cursor_object">cursor</a> &middot;
-<a href="#postgres_extensions">extensions</a> &middot;
 <a href="#examples">example</a>
 </small></center>
 <p>
 
 <hr>
 
-	<H2>*****Introduction</H2>
-		LuaExpat is...
-	<H2>Parser objects</H2>
-<P>		LuaExpat bases all its operations on the concept of a parser object. A parser object is created with an optional table of callbacks, wich are responsible for the handling of the document parts. The document can be fed to the parser in pieces, and the parsing begins as soon as the parser receives some part of the document. The parsing of huge documents can benefit from this piece by piece operation.
-		The parser will assume the default behaviour for any non declared callbacks.
-		The parser is created by the call lxp.new(callbacks) that takes an optional table with the callbacks to be registered. The function lxp.new returns the created parser or raises an Lua error.
-</P>
+	<dl><dt><H2>Introduction</H2>
+  <dd>
+  <p>LuaExpat is a <a href="http://www.saxproject.org/">SAX</a> XML parser based on the <a href="http://jclark.com/xml/expat.html">Expat</a> library.  SAX is the <em>Simple API for XML</em> and allows programs to</p>
+  <ul>
+  <li> process a XML document incrementally, thus being able to handle huge documents without memory penalties;
+  <li> register handler functions wich are called by the parser during the processing of the document, handling the document elements or text.
+  </ul>
+  <p>With an event based API like SAX the XML document can be fed to the parser in pieces, and the parsing begins as soon as the parser receives some part of the document. LuaExpat reports parsing events (such as the start and end of elements) directly to the application through callbacks. The parsing of huge documents can benefit from this piece by piece operation.</p>
+  </dl>
+
+	<dl><dt><H2>Parser objects</H2>
+  <dd>
+  <P>LuaExpat bases all its operations on the concept of a parser object. Other SAX parsers allows the registration of callbacks, but with LuaExpat a parser object is created with an table of callbacks. This table contains references to the callback functions, wich are responsible for the handling of the document parts. The parser will assume the default behaviour for any non declared callbacks. The parser is created by the call lxp.new(callbacks) that takes an optional table with the callbacks to be registered. The function lxp.new returns the created parser or raises an Lua error.
+  </P>
 		<H3>Callbacks</H3>
 			The Lua callbacks define the handlers of the parser events
 			<H4>CharacterData(parser, string)</H4>
@@ -70,8 +73,9 @@ ul { list-style-type: disc };
 				Receives the namespace string for a namespace declaration. Namespace declarations occur inside start tags. But the namespace declaration start handler is called before the start tag handler for each namespace declared in that start tag.
 			<H4>******UnparsedEntityDecl(parser, entityName, base, systemId, publicId, notationName)</H4>
 				Set a handler that receives declarations of unparsed entities. These are entity declarations that have a notation (NDATA) field: ?<!ENTITY logo SYSTEM "images/logo.gif" NDATA gif>?So for this example, the entityName would be "logo", the systemId would be "images/logo.gif" and notationName would be "gif". For this example the publicId parameter is null. The base parameter would be whatever has been set with XML_SetBase. If not set, it would be null.
-		<H2>Methods</H2>
-			<H3>parser:close()</H3>
+  </dl>
+	<dl><dt><H2>Methods</H2>
+	<dd><H3>parser:close()</H3>
 				Closes the parser, freeing all memory associated with it.
 			<H3>parser:getbase()</H3>
 				 Return the base for resolving relative URIs.
@@ -85,37 +89,16 @@ ul { list-style-type: disc };
 			  Set the base to be used for resolving relative URIs in system identifiers.
 			<H3>parser:setencoding(encoding)</H3>
 				Set the encoding to be used by the parser. There are four built-in encodings: US-ASCII, UTF-8, UTF-16, and ISO-8859-1
-	<H2>Example</H2>
-		<PRE>require "lxp"</PRE>
+	</dl>
+	<dl><dt><H2>Example</H2>
+	<dd><PRE>require "lxp"</PRE>
 		<PRE>p = lxp.new() --</PRE>
-
+  </dl>
 <a name="contents"></a>
 <h2>Contents</h2>
 <p>
 <ul>
 <li> <a href="#introduction">Introduction</a>
-<li> <a href="#environment_object">Environment objects</a>
-  <ul>
-    <li> <a href="#env_close">close</a>
-    <li> <a href="#env_connect">connect</a>
-  </ul>
-<li> <a href="#connection_object">Connection object</a>
-  <ul>
-    <li> <a href="#conn_close">close</a>
-    <li> <a href="#conn_commit">commit</a>
-    <li> <a href="#conn_execute">execute</a>
-    <li> <a href="#conn_rollback">rollback</a>
-    <li> <a href="#conn_setautocommit">setautocommit</a>
-  </ul>
-<li> <a href="#cursor_object">Cursor objects</a>
-  <ul>
-    <li> <a href="#cur_close">close</a>
-    <li> <a href="#cur_fetch">fetch</a>
-    <li> <a href="#cur_colnames">getcolnames</a>
-    <li> <a href="#cur_coltypes">getcoltypes</a>
-  </ul>
-<li> <a href="#postgres_extensions">PostgreSQL extensions</a>
-<li> <a href="#mysql_extensions">MySQL extensions</a>
 <li> <a href="#examples">Example</a>
 </ul>
 </p>
@@ -124,19 +107,10 @@ ul { list-style-type: disc };
 <p>
 <center><small>
 <a href="index.html">home</a> &middot;
-<a href="#environment_object">environment</a> &middot;
-<a href="#connection_object">connection</a> &middot;
-<a href="#cursor_object">cursor</a> &middot;
-<a href="#postgres_extensions">extensions</a> &middot;
 <a href="#examples">example</a>
 </small></center>
 <p>
 
 <hr>
-<small>
-Last modified on
-Wed Jul 23 17:43:57 BRT 2003
-</small>
-
 </body>
 </html>
