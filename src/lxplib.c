@@ -1,6 +1,7 @@
 /*
-** $Id: lxplib.c,v 1.2 2003-09-10 10:50:19 roberto Exp $
+** $Id: lxplib.c,v 1.3 2003-12-02 14:56:28 tomas Exp $
 ** LuaExpat
+** See Copyright Notice in license.html
 */
 
 

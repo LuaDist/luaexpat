@@ -1,4 +1,6 @@
 #!/usr/local/bin/lua5.0
+-- See Copyright Notice in license.html
+-- $Id: test.lua,v 1.3 2003-12-02 14:56:28 tomas Exp $
 
 require"lxp"
 

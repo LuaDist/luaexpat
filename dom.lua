@@ -1,3 +1,6 @@
+-- See Copyright Notice in license.html
+-- $Id: dom.lua,v 1.2 2003-12-02 14:56:28 tomas Exp $
+
 require "lxp"
 
 local tinsert, tremove, getn = table.insert, table.remove, table.getn

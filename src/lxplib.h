@@ -1,3 +1,6 @@
+/*
+** See Copyright Notice in license.html
+*/
 
 #define ParserType	"Expat"
 
