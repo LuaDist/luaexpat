@@ -14,7 +14,7 @@ CWARNS = -Wall -pedantic \
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
    -L./expat/xmlparse
 
-VERSION= 1.0
+VERSION= 1.0a
 PKG = luaexpat-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
