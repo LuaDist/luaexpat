@@ -16,6 +16,8 @@ LUA_DIR= /usr/local/share/lua/5.0
 
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
    -I$(COMPAT_DIR) -L./expat/xmlparse
+#LIB_EXT= .so
+LIB_EXT= .dylib
 
 VERSION= 1.0b2
 PKG = luaexpat-$(VERSION)
@@ -41,9 +43,9 @@ compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 
 install:
 	mkdir -p $(LUA_LIB_DIR)
-	cp lib* lxp.* $(LUA_LIB_DIR)
-	mkdir -p $(LUA_DIR)
-	cp lom.lua $(LUA_DIR)
+	cp liblxp$(LIB_EXT) lxp$(LIB_EXT) $(LUA_LIB_DIR)
+	mkdir -p $(LUA_DIR)/lxp
+	cp lom.lua $(LUA_DIR)/lxp
 
 clean:
 	rm -f liblxp.so liblxp.dylib lxplib.o
