@@ -16,7 +16,7 @@ LUA_LIB_DIR= /usr/local/lib/lua/5.0
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
    -I$(COMPAT_DIR) -L./expat/xmlparse
 
-VERSION= 1.0b
+VERSION= 1.0b2
 PKG = luaexpat-$(VERSION)
 DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
