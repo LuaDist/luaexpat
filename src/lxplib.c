@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.5 2004-10-15 15:08:07 tomas Exp $
+** $Id: lxplib.c,v 1.6 2004-11-03 10:50:04 tomas Exp $
 ** LuaExpat
 ** See Copyright Notice in license.html
 */
@@ -509,6 +509,25 @@ static const struct luaL_reg lxp_funcs[] = {
 };
 
 
+/*
+** Assumes the table is on top of the stack.
+*/
+static void set_info (lua_State *L) {
+	lua_pushliteral (L, "_COPYRIGHT");
+	lua_pushliteral (L, "Copyright (C) 2003-2004 Kepler Project");
+	lua_settable (L, -3);
+	lua_pushliteral (L, "_DESCRIPTION");
+	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
+	lua_settable (L, -3);
+	lua_pushliteral (L, "_NAME");
+	lua_pushliteral (L, "LuaExpat");
+	lua_settable (L, -3);
+	lua_pushliteral (L, "_VERSION");
+	lua_pushliteral (L, "1.0b2");
+	lua_settable (L, -3);
+}
+
+
 int luaopen_lxp (lua_State *L) {
   luaL_newmetatable(L, ParserType);
   lua_pushliteral(L, "__index");
@@ -516,6 +535,7 @@ int luaopen_lxp (lua_State *L) {
   lua_rawset(L, -3);
   luaL_openlib (L, NULL, lxp_meths, 0);
   luaL_openlib (L, "lxp", lxp_funcs, 0);
+  set_info (L);
 
   return 1;
 }
