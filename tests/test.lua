@@ -1,13 +1,13 @@
 #!/usr/local/bin/lua5.0
 
-assert(loadlib("./expat.so", "luaopen_lxp"))()
+require"lxp"
 
 
 -- basic test with no preamble
 local p = lxp.new{}
 p:setencoding("ISO-8859-1")
 assert(p:parse[[<tag cap="5">hi</tag>]])
-assert(p:close())
+p:close()
 
 
 preamble = [[
@@ -51,6 +51,7 @@ callbacks = {
   EndElement = getargs,
 }
 p = lxp.new(callbacks)
+assert(p:getcallbacks() == callbacks)
 assert(p:parse(preamble))
 assert(p:parse([[
 <to priority="10" xu = "hi">
@@ -60,7 +61,8 @@ x = X[3]
 assert(x.priority=="10" and x.xu=="hi" and x.method=="POST")
 assert(x[1] == "priority" and x[2] == "xu" and table.getn(x) == 2)
 assert(p:parse("</to>"))
-assert(p:close())
+assert(p:parse())
+p:close()
 
 
 -------------------------------
@@ -74,7 +76,10 @@ assert(p:parse"<to>a basic text&lt;<![CDATA[<<ha>>]]></to>")
 assert(X[1] == p and X[2] == "a basic text<<<ha>>")
 callbacks.chardata = error   -- no more calls to `chardata'
 assert(p:parse(""))
-assert(p:close())
+assert(p:parse())
+assert(p:parse())   -- no problem to finish twice
+assert(p:getcallbacks() == callbacks)
+p:close()
 
 -------------------------------
 callbacks = {
@@ -92,7 +97,7 @@ assert(X[1][1] == "s" and X[1][2] == p)
 assert(X[2][1] == "c" and X[2][2] == p and X[2][3] == "hi")
 assert(X[3][1] == "e" and X[3][2] == p)
 assert(p:parse"</to>")
-assert(p:close())
+p:close()
 
 
 -------------------------------
@@ -106,7 +111,7 @@ assert(p:parse[[
 ]])
 assert(X[1] == p and X[2] == "lua" and
        X[3] == "how is this passed to <here>? ")
-assert(p:close())
+p:close()
 
 
 ------------------------------
@@ -120,7 +125,7 @@ assert(p:parse[[
 some more text</to>
 
 ]])
-assert(p:close())
+p:close()
 
 assert(X[1][1] == "t" and X[2][1] == "c" and X[3][1] == "t")
 assert(X[1][2] == X[2][2] and X[2][2] == X[3][2] and X[3][2] == p)
@@ -150,7 +155,7 @@ assert(p:parse[[
 </to>
 ]])
 assert(p:getbase() == "/base")
-assert(p:close())
+p:close()
 assert(X[1][1] == "s" and X[1][3] == "to")
 assert(X[2][1] == "s" and X[2][3] == "hi")
 assert(X[3][1] == "e" and X[3][3] == "hi")
@@ -166,7 +171,7 @@ callbacks = { Default = function (p, s) t = t .. s end }
 p = lxp.new(callbacks)
 assert(p:parse(preamble))
 assert(p:parse(text))
-assert(p:close())
+p:close()
 assert(t == preamble..text)
 
 t = ""
@@ -174,7 +179,7 @@ callbacks = { DefaultExpand = function (p, s) t = t .. s end }
 p = lxp.new(callbacks)
 assert(p:parse(preamble))
 assert(p:parse(text))
-assert(p:close())
+p:close()
 assert(t == preamble..string.gsub(text, "&xuxu;", "is this a xuxu?"))
 
 
@@ -191,7 +196,7 @@ p = lxp.new(callbacks)
 p:setbase("/base")
 assert(p:parse(preamble))
 assert(p:parse[[<hihi explanation="test-unparsed"/>]])
-assert(p:close())
+p:close()
 assert(X[2] == "test-unparsed" and X[3] == "/base" and
        X[4] == "unparsed.txt" and X[6] == "txt" and X.n == 6)
 
@@ -211,7 +216,7 @@ assert(p:parse[[
   <space:a/>
 </x>
 ]])
-assert(p:close())
+p:close()
 x = X[1]
 assert(x[1] == "sn" and x[3] == "space" and x[4] == "a/namespace" and x.n == 4)
 x = X[3]
@@ -234,6 +239,10 @@ local status, msg, line, col, byte = p:parse(data)
 assert(status == nil and type(msg) == "string" and line == 2 and col == 9)
 assert(string.sub(data, byte, byte) == "<")
 
+p = lxp.new{}
+p:parse("<to>")
+local status, msg, line, col, byte = p:parse()
+assert(status == nil and line == 1 and col == 5 and byte == 5)
 
 
 -- position reporting
@@ -247,8 +256,27 @@ assert(p:parse[[
 <to> <?test where is `pos'? ?>
 </to>
 ]])
-assert(p:close())
+p:close()
 assert(X[1] == 1  and X[2] == 6 and X[3] == 6)  -- line, column, abs. position
+
+
+
+print("testing errors")
+-- invalid keys
+assert(not pcall(lxp.new, {StatCdata=print}))
+assert(pcall(lxp.new, {StatCdata=print, _nonstrict = true}))
+
+-- invalid sequences
+p = lxp.new{}
+assert(p:parse[[<to></to>]])
+assert(p:parse())
+assert(p:parse(" ") == nil)
+
+-- closing unfinished document
+p = lxp.new{}
+assert(p:parse[[<to>]])
+local status, err = pcall(p.close, p)
+assert(not status and string.find(err, "error closing parser"))
 
 
 -- test for GC

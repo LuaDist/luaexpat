@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.1 2003-07-23 16:28:39 roberto Exp $
+** $Id: lxplib.c,v 1.2 2003-09-10 10:50:19 roberto Exp $
 ** LuaExpat
 */
 
@@ -21,6 +21,7 @@
 enum XPState {
   XPSpre,  /* parser just initialized */
   XPSok,   /* state while parsing */
+  XPSfinished,  /* state after finished parsing */
   XPSerror,
   XPSstring  /* state while reading a string */
 };
@@ -30,7 +31,7 @@ struct lxp_userdata {
   XML_Parser *parser;  /* associated expat parser */
   int tableref;  /* table with callbacks for this parser */
   enum XPState state;
-  luaL_Buffer *b;
+  luaL_Buffer *b;  /* to concatenate sequences of cdata pieces */
 };
 
 typedef struct lxp_userdata lxp_userdata;
@@ -72,7 +73,7 @@ static void lxpclose (lua_State *L, lxp_userdata *xpu) {
 
 
 /*
-** Auxiliary function to call Lua handle
+** Auxiliary function to call a Lua handle
 */
 static void docall (lxp_userdata *xpu, int nargs, int nres) {
   lua_State *L = xpu->L;
@@ -320,15 +321,34 @@ static int hasfield (lua_State *L, const char *fname) {
 }
 
 
+static void checkcallbacks (lua_State *L) {
+  static const char *const validkeys[] = {
+    "StartCdataSection", "EndCdataSection", "CharacterData", "Comment",
+    "Default", "DefaultExpand", "StartElement", "EndElement",
+    "ExternalEntityRef", "StartNamespaceDecl", "EndNamespaceDecl",
+    "NotationDecl", "NotStandalone", "ProcessingInstruction",
+    "UnparsedEntityDecl", NULL};
+  if (hasfield(L, "_nonstrict")) return;
+  lua_pushnil(L);
+  while (lua_next(L, 1)) {
+    lua_pop(L, 1);  /* remove value */
+    if (lua_type(L, -1) != LUA_TSTRING ||
+        luaL_findstring(lua_tostring(L, -1), validkeys) < 0)
+      luaL_error(L, "invalid key `%s' in callback table", lua_tostring(L, -1));
+  }
+}
+
+
 static int lxp_make_parser (lua_State *L) {
   XML_Parser p;
-  char sep = *luaL_optstring(L, 2, ":");
+  char sep = *luaL_optstring(L, 2, "");
   lxp_userdata *xpu = createlxp(L);
   p = xpu->parser = (sep == '\0') ? XML_ParserCreate(NULL) :
                                     XML_ParserCreateNS(NULL, sep);
   if (!p)
     luaL_error(L, "XML_ParserCreate failed");
   luaL_checktype(L, 1, LUA_TTABLE);
+  checkcallbacks(L);
   lua_pushvalue(L, 1);
   xpu->tableref = luaL_ref(L, LUA_REGISTRYINDEX);
   XML_SetUserData(p, xpu);
@@ -391,6 +411,13 @@ static int getbase (lua_State *L) {
 }
 
 
+static int getcallbacks (lua_State *L) {
+  lxp_userdata *xpu = checkparser(L, 1);
+  lua_rawgeti(L, LUA_REGISTRYINDEX, xpu->tableref);
+  return 1;
+}
+
+
 static int parse_aux (lua_State *L, lxp_userdata *xpu, const char *s,
                       size_t len) {
   luaL_Buffer b;
@@ -406,6 +433,7 @@ static int parse_aux (lua_State *L, lxp_userdata *xpu, const char *s,
     lua_rawgeti(L, LUA_REGISTRYINDEX, xpu->tableref);  /* get original msg. */
     lua_error(L);
   }
+  if (s == NULL) xpu->state = XPSfinished;
   if (status) {
     lua_pushboolean(L, 1);
     return 1;
@@ -419,18 +447,26 @@ static int parse_aux (lua_State *L, lxp_userdata *xpu, const char *s,
 static int lxp_parse (lua_State *L) {
   lxp_userdata *xpu = checkparser(L, 1);
   size_t len;
-  const char *s = luaL_checklstring(L, 2, &len);
+  const char *s = luaL_optlstring(L, 2, NULL, &len);
+  if (xpu->state == XPSfinished && s != NULL) {
+    lua_pushnil(L);
+    lua_pushliteral(L, "cannot parse - document is finished");
+    return 2;
+  }
   return parse_aux(L, xpu, s, len);
 }
 
 
 static int lxp_close (lua_State *L) {
-  int res = 0;
+  int status = 1;
   lxp_userdata *xpu = (lxp_userdata *)luaL_checkudata(L, 1, ParserType);
   luaL_argcheck(L, xpu, 1, "expat parser expected");
-  res = parse_aux(L, xpu, NULL, 0);
+  if (xpu->state != XPSfinished)
+    status = parse_aux(L, xpu, NULL, 0);
   lxpclose(L, xpu);
-  return res;
+  if (status > 1) luaL_error(L, "error closing parser: %s",
+                                lua_tostring(L, -status+1));
+  return 0;
 }
 
 
@@ -459,6 +495,7 @@ static const struct luaL_reg lxp_meths[] = {
   {"__gc", parser_gc},
   {"pos", lxp_pos},
   {"setencoding", lxp_setencoding},
+  {"getcallbacks", getcallbacks},
   {"getbase", getbase},
   {"setbase", setbase},
   {NULL, NULL}
