@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.8 2004-11-17 14:20:02 tomas Exp $
+** $Id: lxplib.c,v 1.9 2004-12-02 14:27:05 tomas Exp $
 ** LuaExpat
 ** See Copyright Notice in license.html
 */
@@ -523,7 +523,7 @@ static void set_info (lua_State *L) {
 	lua_pushliteral (L, "LuaExpat");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "1.0b2");
+	lua_pushliteral (L, "1.0");
 	lua_settable (L, -3);
 }
 

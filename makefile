@@ -19,7 +19,7 @@ CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
 #LIB_EXT= .so
 LIB_EXT= .dylib
 
-VERSION= 1.0b2
+VERSION= 1.0
 PKG = luaexpat-$(VERSION)
 DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
