@@ -179,7 +179,7 @@ ul { list-style-type: disc };
   <p><pre>
   local count = 0
   callbacks = {
-    StarElement = function (parser, name)
+    StartElement = function (parser, name)
       io.write("+ ", string.rep(" ", count), name, "\n")
       count = count + 1
     end,
@@ -216,7 +216,7 @@ ul { list-style-type: disc };
   <p>Note that the text parts are not handled since the corresponding callback (<em>CharacterData</em>) have not been defined. Also note that defining this callback after the call to lxp.new would make no difference. But had the callback table been defined as</p>
   <pre>
   callbacks = {
-    StarElement = function (parser, name)
+    StartElement = function (parser, name)
       io.write("+ ", string.rep(" ", count), name, "\n")
       count = count + 1
     end,
@@ -251,7 +251,7 @@ ul { list-style-type: disc };
   <p>We could define the new callback table as</p>
   <pre>
   callbacks = {
-    StarElement = function (parser, name)
+    StartElement = function (parser, name)
       if name == "elem2" then
         callbacks.CharacterData = function (parser, string)   -- redefines CharacterData behaviour
           io.write(string, "\n")
@@ -296,7 +296,7 @@ ul { list-style-type: disc };
 
 <hr>
 <small>
-$Id: manual.html,v 1.8 2003-12-10 17:50:25 tomas Exp $
+$Id: manual.html,v 1.9 2003-12-16 14:59:20 tomas Exp $
 </small>
 
 </body>
