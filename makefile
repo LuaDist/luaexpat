@@ -10,9 +10,11 @@ CWARNS = -Wall -pedantic \
         -Wshadow \
         -Wwrite-strings
 
+COMPAT_DIR= ../compat
+
 
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
-   -L./expat/xmlparse
+   -I$(COMPAT_DIR) -L./expat/xmlparse
 
 VERSION= 1.0b
 PKG = luaexpat-$(VERSION)
@@ -24,11 +26,14 @@ SRCS= README makefile \
 	index.html manual.html lom.html luaexpat.png
 
 
-liblxp.so : lxplib.o
-	ld -o liblxp.so -shared lxplib.o -lexpat
+liblxp.so : lxplib.o compat-5.1.o
+	ld -o liblxp.so -shared lxplib.o compat-5.1.o -lexpat
 
-liblxp.dylib : lxplib.o
-	gcc -o liblxp.dylib -dynamiclib lxplib.o -lexpat -llua-5.0 -llualib-5.0
+liblxp.dylib : lxplib.o compat-5.1.o
+	gcc -o liblxp.dylib -dynamiclib lxplib.o compat-5.1.o -lexpat -llua-5.0 -llualib-5.0
+
+compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
+	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
 
 clean:
 	rm -f liblxp.so liblxp.dylib lxplib.o
