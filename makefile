@@ -11,10 +11,28 @@ CWARNS = -Wall -pedantic \
         -Wwrite-strings
 
 
-CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/home/roberto/tmp/lua/include \
+CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I/usr/local/include/lua5 \
    -L./expat/xmlparse
+
+VERSION= 1.0
+PKG = luaexpat-$(VERSION)
+TAR_FILE= $(PKG).tar.gz
+ZIP_FILE= $(PKG).zip
+SRCS= README makefile \
+	lxplib.c lxp.lua \
+	test.lua \
+	index.html manual.html lua.png
 
 
 liblxp.so : lxplib.o
 	ld -o liblxp.so -shared lxplib.o -lexpat
 
+liblxp.dylib : lxplib.o
+	gcc -o liblxp.dylib -dynamiclib lxplib.o -lexpat -llua.5.0 -llualib.5.0
+
+dist:
+	mkdir $(PKG)
+	cp $(SRCS) $(PKG)
+	tar -czf $(TAR_FILE) $(PKG)
+	zip -lq $(ZIP_FILE) $(PKG)
+	rm -rf $(PKG)
