@@ -10,7 +10,7 @@ CWARNS = -Wall -pedantic \
         -Wshadow \
         -Wwrite-strings
 
-COMPAT_DIR= ../compat
+COMPAT_DIR= ../compat/src
 LUA_LIBDIR= /usr/local/lib/lua/5.0
 LUA_DIR= /usr/local/share/lua/5.0
 LUA_INC= /usr/local/include/lua5
@@ -27,30 +27,30 @@ DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README makefile \
-	lxplib.c lxplib.h lom.lua \
-	test.lua test-lom.lua \
-	index.html manual.html lom.html luaexpat.png
+	src/lxplib.c src/lxplib.h src/lom.lua \
+	tests/test.lua tests/test-lom.lua \
+	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/lom.html doc/us/luaexpat.png
 
 
-liblxp.so : lxplib.o compat-5.1.o
-	ld -o liblxp.so -shared lxplib.o compat-5.1.o -lexpat
-	ln -f -s liblxp.so lxp.so
+src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	ld -o src/liblxp.so -shared src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
+	ln -f -s src/liblxp.so src/lxp.so
 
-liblxp.dylib : lxplib.o compat-5.1.o
-	gcc -o liblxp.dylib -dynamiclib lxplib.o compat-5.1.o -lexpat $(LUA_LIBS)
-	ln -f -s liblxp.dylib lxp.dylib
+src/liblxp.dylib : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	gcc -o src/liblxp.dylib -dynamiclib src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat $(LUA_LIBS)
+	ln -f -s src/liblxp.dylib src/lxp.dylib
 
-compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
+$(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
 
 install:
 	mkdir -p $(LUA_LIBDIR)
-	cp liblxp$(LIB_EXT) lxp$(LIB_EXT) $(LUA_LIBDIR)
+	cp src/liblxp$(LIB_EXT) src/lxp$(LIB_EXT) $(LUA_LIBDIR)
 	mkdir -p $(LUA_DIR)/lxp
-	cp lom.lua $(LUA_DIR)/lxp
+	cp src/lom.lua $(LUA_DIR)/lxp
 
 clean:
-	rm -f liblxp.so liblxp.dylib lxplib.o
+	rm -f src/liblxp.so src/liblxp.dylib src/lxplib.o
 
 dist: dist_dir
 	tar -czf $(TAR_FILE) $(DIST_DIR)
