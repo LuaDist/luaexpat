@@ -34,18 +34,17 @@ SRCS= README makefile \
 
 src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 	ld -o src/liblxp.so -shared src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
-	ln -f -s src/liblxp.so src/lxp.so
 
 src/liblxp.dylib : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 	gcc -o src/liblxp.dylib -dynamiclib src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat $(LUA_LIBS)
-	ln -f -s src/liblxp.dylib src/lxp.dylib
 
 $(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
 
 install:
 	mkdir -p $(LUA_LIBDIR)
-	cp src/liblxp$(LIB_EXT) src/lxp$(LIB_EXT) $(LUA_LIBDIR)
+	cp src/liblxp$(LIB_EXT) $(LUA_LIBDIR)
+	cd $(LUA_LIBDIR); ln -f -s liblxp$(LIB_EXT) lxp$(LIB_EXT)
 	mkdir -p $(LUA_DIR)/lxp
 	cp src/lom.lua $(LUA_DIR)/lxp
 
