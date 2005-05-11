@@ -29,7 +29,7 @@ ZIP_FILE= $(PKG).zip
 SRCS= README makefile \
 	src/lxplib.c src/lxplib.h src/lom.lua \
 	tests/test.lua tests/test-lom.lua \
-	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/lom.html doc/us/luaexpat.png
+	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/lom.html doc/us/examples.html doc/us/luaexpat.png
 
 
 src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
