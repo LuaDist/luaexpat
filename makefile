@@ -17,9 +17,9 @@ LUA_INC= /usr/local/include/lua5
 
 CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I$(LUA_INC) \
    -I$(COMPAT_DIR) -L./expat/xmlparse
-LIB_EXT= .so
-#LIB_EXT= .dylib
-LUA_LIBS= -llua-5.0 -llualib-5.0 -lm
+#LUA_LIBS= -llua-5.0 -llualib-5.0 -lm
+LIB_OPTION= -shared #for Linux
+#LIB_OPTION= -bundle -undefined dynamic_lookup #for MacOS X
 
 VERSION= 1.0.1
 PKG = luaexpat-$(VERSION)
@@ -32,24 +32,23 @@ SRCS= README makefile \
 	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/lom.html doc/us/examples.html doc/us/luaexpat.png
 
 
-src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
-	ld -o src/liblxp.so -shared src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
+lib: src/liblxp.so
 
-src/liblxp.dylib : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
-	gcc -o src/liblxp.dylib -dynamiclib src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat $(LUA_LIBS)
+src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	gcc -o src/liblxp.so $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
 
 $(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
 
 install:
 	mkdir -p $(LUA_LIBDIR)
-	cp src/liblxp$(LIB_EXT) $(LUA_LIBDIR)
-	cd $(LUA_LIBDIR); ln -f -s liblxp$(LIB_EXT) lxp$(LIB_EXT)
+	cp src/liblxp.so $(LUA_LIBDIR)
+	cd $(LUA_LIBDIR); ln -f -s liblxp.so lxp.so
 	mkdir -p $(LUA_DIR)/lxp
 	cp src/lom.lua $(LUA_DIR)/lxp
 
 clean:
-	rm -f src/liblxp.so src/liblxp.dylib src/lxplib.o
+	rm -f src/liblxp.so src/lxplib.o
 
 dist: dist_dir
 	tar -czf $(TAR_FILE) $(DIST_DIR)
@@ -59,3 +58,5 @@ dist: dist_dir
 dist_dir:
 	mkdir $(DIST_DIR)
 	cp $(SRCS) $(DIST_DIR)
+
+# $Id: makefile,v 1.24 2005-05-25 18:08:20 tomas Exp $
