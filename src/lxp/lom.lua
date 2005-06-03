@@ -1,5 +1,5 @@
 -- See Copyright Notice in license.html
--- $Id: lom.lua,v 1.4 2005-03-28 17:53:22 tomas Exp $
+-- $Id: lom.lua,v 1.5 2005-06-03 20:18:23 carregal Exp $
 
 require "lxp"
 
@@ -7,7 +7,7 @@ local tinsert, tremove, getn = table.insert, table.remove, table.getn
 local assert, type, print = assert, type, print
 local lxp = lxp
 
-module (arg and arg[1])
+module ("lom")
 
 local function starttag (p, tag, attr)
   local stack = p:getcallbacks().stack
