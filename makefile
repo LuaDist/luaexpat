@@ -44,8 +44,7 @@ install:
 	mkdir -p $(LUA_LIBDIR)
 	cp src/liblxp.so $(LUA_LIBDIR)
 	cd $(LUA_LIBDIR); ln -f -s liblxp.so lxp.so
-	mkdir -p $(LUA_DIR)/lxp
-	cp src/lxp/lom.lua $(LUA_DIR)/lxp
+	cp src/lom.lua $(LUA_DIR)
 
 clean:
 	rm -f src/liblxp.so src/lxplib.o
@@ -59,4 +58,4 @@ dist_dir:
 	mkdir $(DIST_DIR)
 	cp $(SRCS) $(DIST_DIR)
 
-# $Id: makefile,v 1.25 2005-06-03 19:31:43 tuler Exp $
+# $Id: makefile,v 1.26 2005-06-03 20:11:29 tuler Exp $
