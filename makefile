@@ -1,61 +1,25 @@
-# Compilation parameters
-CC = gcc
-CWARNS = -Wall -pedantic \
-        -Waggregate-return \
-        -Wcast-align \
-        -Wmissing-prototypes \
-        -Wstrict-prototypes \
-        -Wnested-externs \
-        -Wpointer-arith \
-        -Wshadow \
-        -Wwrite-strings
+T= lxp
+V= 1.0.1
 
-COMPAT_DIR= ../compat/src
-LUA_LIBDIR= /usr/local/lib/lua/5.0
-LUA_DIR= /usr/local/share/lua/5.0
-LUA_INC= /usr/local/include/lua5
-
-CFLAGS = $(CONFIG) $(CWARNS) -ansi -g -O2 -I$(LUA_INC) \
-   -I$(COMPAT_DIR) -L./expat/xmlparse
-#LUA_LIBS= -llua-5.0 -llualib-5.0 -lm
-LIB_OPTION= -shared #for Linux
-#LIB_OPTION= -bundle -undefined dynamic_lookup #for MacOS X
-
-VERSION= 1.0.1
-PKG = luaexpat-$(VERSION)
-DIST_DIR= $(PKG)
-TAR_FILE= $(PKG).tar.gz
-ZIP_FILE= $(PKG).zip
-SRCS= README makefile \
-	src/lxplib.c src/lxplib.h src/lom.lua \
-	tests/test.lua tests/test-lom.lua \
-	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/lom.html doc/us/examples.html doc/us/luaexpat.png
+include ./config
 
 
-lib: src/liblxp.so
+lib: src/$(LIBNAME)
 
-src/liblxp.so : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
-	gcc -o src/liblxp.so $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
+src/$(LIBNAME) : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	$(CC) -o src/$(LIBNAME) $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 
 $(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
 
 install:
 	mkdir -p $(LUA_LIBDIR)
-	cp src/liblxp.so $(LUA_LIBDIR)
-	cd $(LUA_LIBDIR); ln -f -s liblxp.so lxp.so
-	cp src/lom.lua $(LUA_DIR)
+	cp src/$(LIBNAME) $(LUA_LIBDIR)
+	ln -f -s $(LUA_LIBDIR)/$(LIBNAME) $(LUA_LIBDIR)/$T.so
+	mkdir -p $(LUA_DIR)/$T
+	cp src/$T/lom.lua $(LUA_DIR)/$T
 
 clean:
-	rm -f src/liblxp.so src/lxplib.o
+	rm -f src/$(LIBNAME) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 
-dist: dist_dir
-	tar -czf $(TAR_FILE) $(DIST_DIR)
-	zip -rq $(ZIP_FILE) $(DIST_DIR)/*
-	rm -rf $(DIST_DIR)
-
-dist_dir:
-	mkdir $(DIST_DIR)
-	cp $(SRCS) $(DIST_DIR)
-
-# $Id: makefile,v 1.26 2005-06-03 20:11:29 tuler Exp $
+# $Id: makefile,v 1.27 2005-06-05 00:29:27 tomas Exp $
