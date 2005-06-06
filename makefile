@@ -8,7 +8,7 @@ include $(CONFIG)
 lib: src/$(LIBNAME)
 
 src/$(LIBNAME) : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
-	$(CC) -o src/$(LIBNAME) $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC) -o src/$(LIBNAME) $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 
 $(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
@@ -23,4 +23,4 @@ install:
 clean:
 	rm -f src/$(LIBNAME) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 
-# $Id: makefile,v 1.28 2005-06-06 20:25:23 tomas Exp $
+# $Id: makefile,v 1.29 2005-06-06 22:08:07 tomas Exp $
