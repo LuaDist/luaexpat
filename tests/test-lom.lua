@@ -1,6 +1,6 @@
 #!/usr/local/bin/lua
 
-local lom = require"lxp.lom"
+local lom = require "lxp.lom"
 
 local tests = {
 	[[<abc a1="A1" a2="A2">inside tag `abc'</abc>]],
