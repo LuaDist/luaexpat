@@ -57,7 +57,7 @@ complete, but simple.</p>
 
 <p>LuaExpat's distribution provides an implementation of LOM that
 gets a XML documenta (a string) and transforms it to a Lua table.
-The only function exported is <strong><code>lom.parse</code></strong>.</p>
+The only function exported is <strong><code>lxp.lom.parse</code></strong>.</p>
 
  
 <h2><a name="characteristics"></a>Characteristics</h2>
@@ -100,7 +100,7 @@ necessary), the sequence of <em>key</em>s could be placed at the
 <p>A call like</p>
 
 <pre class="example">
-    tab = lom.parse (s))
+    tab = lxp.lom.parse (s))
 </pre>
 
 <p>Would result in a table equivalent to</p>
@@ -121,7 +121,7 @@ tab = {
 <p>Now an example with an element inside another one</p>
 
 <pre class="example">
-tab = lom.parse(
+tab = lxp.lom.parse(
 [[&lt;qwerty q1="q1" q2="q2"&gt;
     &lt;asdf&gt;some text&lt;/asdf&gt;
 &lt;/qwerty&gt;]]
@@ -162,7 +162,7 @@ on the table.</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
 	<p><small>
-	$Id: lom.html,v 1.4 2005-05-23 14:01:12 carregal Exp $
+	$Id: lom.html,v 1.5 2005-06-06 19:23:39 tuler Exp $
 	</small></p>
 </div> <!-- id="about" -->
 
