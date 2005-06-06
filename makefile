@@ -1,7 +1,8 @@
 T= lxp
 V= 1.0.1
+CONFIG= ./config
 
-include ./config
+include $(CONFIG)
 
 
 lib: src/$(LIBNAME)
@@ -22,4 +23,4 @@ install:
 clean:
 	rm -f src/$(LIBNAME) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
 
-# $Id: makefile,v 1.27 2005-06-05 00:29:27 tomas Exp $
+# $Id: makefile,v 1.28 2005-06-06 20:25:23 tomas Exp $
