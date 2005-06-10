@@ -16,9 +16,6 @@ LIBNAME= lib$T-$V.so
 COMPAT_DIR= ../compat/src
 
 # Compilation parameters
-# On FreeBSD systems, the following line should be commented
-DLLIB= -ldl
-#LUA_LIBS= -llua50 -lm
 CWARNS = -Wall -pedantic \
         -Waggregate-return \
         -Wcast-align \
