@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.11 2005-06-09 19:18:50 tuler Exp $
+** $Id: lxplib.c,v 1.12 2005-06-21 11:43:27 tomas Exp $
 ** LuaExpat: Lua bind for Expat library
 ** See Copyright Notice in license.html
 */
@@ -519,11 +519,8 @@ static void set_info (lua_State *L) {
 	lua_pushliteral (L, "_DESCRIPTION");
 	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
 	lua_settable (L, -3);
-	lua_pushliteral (L, "_NAME");
-	lua_pushliteral (L, "LuaExpat");
-	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "1.0.2");
+	lua_pushliteral (L, "LuaExpat 1.0.2");
 	lua_settable (L, -3);
 }
 
