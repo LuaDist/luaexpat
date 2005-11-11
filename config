@@ -26,6 +26,6 @@ CWARNS = -Wall -pedantic \
         -Wshadow \
         -Wwrite-strings
 
-CFLAGS = $(CONFIG) $(CWARNS) -ansi -O2 -I$(LUA_INC) \
+CFLAGS = $(CWARNS) -ansi -O2 -I$(LUA_INC) \
    -I$(COMPAT_DIR) -I$(EXPAT_INC)
 CC = gcc
