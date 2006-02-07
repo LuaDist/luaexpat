@@ -1,6 +1,6 @@
-#!/usr/local/bin/lua5.0
+#!/usr/local/bin/lua50
 -- See Copyright Notice in license.html
--- $Id: test.lua,v 1.4 2005-06-03 20:18:23 carregal Exp $
+-- $Id: test.lua,v 1.5 2006-02-07 01:40:17 uid20013 Exp $
 
 require"lxp"
 
