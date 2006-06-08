@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.13 2006-03-20 19:55:53 carregal Exp $
+** $Id: lxplib.c,v 1.14 2006-06-08 20:41:48 tomas Exp $
 ** LuaExpat: Lua bind for Expat library
 ** See Copyright Notice in license.html
 */
@@ -13,7 +13,9 @@
 
 #include "lua.h"
 #include "lauxlib.h"
+#if ! defined (LUA_VERSION_NUM) || LUA_VERSION_NUM < 501
 #include "compat-5.1.h"
+#endif
 
 
 #include "lxplib.h"
@@ -334,9 +336,14 @@ static void checkcallbacks (lua_State *L) {
   lua_pushnil(L);
   while (lua_next(L, 1)) {
     lua_pop(L, 1);  /* remove value */
+#if ! defined (LUA_VERSION_NUM) || LUA_VERSION_NUM < 501
     if (lua_type(L, -1) != LUA_TSTRING ||
         luaL_findstring(lua_tostring(L, -1), validkeys) < 0)
       luaL_error(L, "invalid key `%s' in callback table", lua_tostring(L, -1));
+#else
+    if (lua_type(L, -1) == LUA_TSTRING)
+        luaL_checkoption(L, -1, NULL, validkeys);
+#endif
   }
 }
 
@@ -520,7 +527,7 @@ static void set_info (lua_State *L) {
 	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "LuaExpat 1.0.2");
+	lua_pushliteral (L, "LuaExpat 1.1.0");
 	lua_settable (L, -3);
 }
 

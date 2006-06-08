@@ -1,14 +1,18 @@
 T= lxp
-V= 1.0.2
+V= 1.1.0
 CONFIG= ./config
 
 include $(CONFIG)
 
+ifeq "$(LUA_VERSION_NUM)" "500"
+COMPAT_O= $(COMPAT_DIR)/compat-5.1.o
+endif
 
+OBJS= src/lxplib.o $(COMPAT_O)
 lib: src/$(LIBNAME)
 
-src/$(LIBNAME) : src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
-	export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC) -o src/$(LIBNAME) $(LIB_OPTION) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o -lexpat
+src/$(LIBNAME) : $(OBJS)
+	export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC) -o src/$(LIBNAME) $(LIB_OPTION) $(OBJS) -lexpat
 
 $(COMPAT_DIR)/compat-5.1.o: $(COMPAT_DIR)/compat-5.1.c
 	$(CC) -c $(CFLAGS) -o $@ $(COMPAT_DIR)/compat-5.1.c
@@ -21,6 +25,6 @@ install:
 	cp src/$T/lom.lua $(LUA_DIR)/$T
 
 clean:
-	rm -f src/$(LIBNAME) src/lxplib.o $(COMPAT_DIR)/compat-5.1.o
+	rm -f src/$(LIBNAME) $(OBJS)
 
-# $Id: makefile,v 1.32 2005-06-27 17:04:27 tomas Exp $
+# $Id: makefile,v 1.33 2006-06-08 20:41:48 tomas Exp $
