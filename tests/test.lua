@@ -1,9 +1,9 @@
-#!/usr/local/bin/lua50
+#!/usr/local/bin/lua5.1
 -- See Copyright Notice in license.html
--- $Id: test.lua,v 1.5 2006-02-07 01:40:17 uid20013 Exp $
+-- $Id: test.lua,v 1.6 2006-06-08 20:34:52 tomas Exp $
 
 require"lxp"
-
+print (lxp._VERSION)
 
 -- basic test with no preamble
 local p = lxp.new{}
@@ -220,13 +220,13 @@ assert(p:parse[[
 ]])
 p:close()
 x = X[1]
-assert(x[1] == "sn" and x[3] == "space" and x[4] == "a/namespace" and x.n == 4)
+assert(x[1] == "sn" and x[3] == "space" and x[4] == "a/namespace" and table.getn(x) == 4)
 x = X[3]
 assert(x[1] == "s" and x[3] == "a/namespace?a")
 x = X[4]
 assert(x[1] == "e" and x[3] == "a/namespace?a")
 x = X[6]
-assert(x[1] == "en" and x[3] == "space" and x.n == 3)
+assert(x[1] == "en" and x[3] == "space" and table.getn(x) == 3)
 
 
 
