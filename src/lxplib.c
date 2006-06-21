@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.14 2006-06-08 20:41:48 tomas Exp $
+** $Id: lxplib.c,v 1.15 2006-06-21 21:33:52 tomas Exp $
 ** LuaExpat: Lua bind for Expat library
 ** See Copyright Notice in license.html
 */
@@ -341,8 +341,7 @@ static void checkcallbacks (lua_State *L) {
         luaL_findstring(lua_tostring(L, -1), validkeys) < 0)
       luaL_error(L, "invalid key `%s' in callback table", lua_tostring(L, -1));
 #else
-    if (lua_type(L, -1) == LUA_TSTRING)
-        luaL_checkoption(L, -1, NULL, validkeys);
+    luaL_checkoption(L, -1, NULL, validkeys);
 #endif
   }
 }
