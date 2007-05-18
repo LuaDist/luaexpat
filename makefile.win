@@ -1,7 +1,7 @@
 LUA_INC=c:\lua5.1\include
 LUA_DIR=c:\lua5.1\lua
 LUA_LIBDIR=c:\lua5.1\lib
-LUA_LIB=c:\lua5.1\bin\lua5.1.lib
+LUA_LIB=c:\lua5.1\lua5.1.lib
 
 OBJS= src\lxplib.obj
 
@@ -24,4 +24,4 @@ clean:
 	del src\lxp.dll
 	del src\*.obj
 
-# $Id: makefile.win,v 1.1 2007-03-22 21:55:01 mascarenhas Exp $
+# $Id: makefile.win,v 1.2 2007-05-18 19:52:50 carregal Exp $
