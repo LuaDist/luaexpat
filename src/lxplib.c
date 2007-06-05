@@ -1,5 +1,5 @@
 /*
-** $Id: lxplib.c,v 1.15 2006-06-21 21:33:52 tomas Exp $
+** $Id: lxplib.c,v 1.16 2007-06-05 20:03:12 carregal Exp $
 ** LuaExpat: Lua bind for Expat library
 ** See Copyright Notice in license.html
 */
@@ -520,7 +520,7 @@ static const struct luaL_reg lxp_funcs[] = {
 */
 static void set_info (lua_State *L) {
 	lua_pushliteral (L, "_COPYRIGHT");
-	lua_pushliteral (L, "Copyright (C) 2003-2006 Kepler Project");
+	lua_pushliteral (L, "Copyright (C) 2003-2007 Kepler Project");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_DESCRIPTION");
 	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
