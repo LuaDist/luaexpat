@@ -355,7 +355,12 @@ macro (install_lua_module _name )
      find_package ( Lua51 REQUIRED )
      include_directories ( ${LUA_INCLUDE_DIR} )
    
-     add_library( ${_target} MODULE ${_MODULE_DEFAULT_ARGS})
+  if(BUILD_STATIC)
+     add_library( ${_target} STATIC ${_MODULE_DEFAULT_ARGS})
+  else()
+     add_library( ${_target} MODULE ${_MODULE_DEFAULT_ARGS})    
+  endif()
+  
      target_link_libraries ( ${_target} ${LUA_LIBRARY} ${_MODULE_LINK} )
      set_target_properties ( ${_target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${_module_path}" PREFIX "" OUTPUT_NAME "${_module_name}" )
      
