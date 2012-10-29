@@ -1,5 +1,5 @@
 T= lxp
-V= 1.1.0
+V= 1.2.0
 CONFIG= ./config
 
 include $(CONFIG)
@@ -27,4 +27,4 @@ install:
 clean:
 	rm -f src/$(LIBNAME) $(OBJS)
 
-# $Id: makefile,v 1.33 2006-06-08 20:41:48 tomas Exp $
+# $Id: makefile,v 1.33 2006/06/08 20:41:48 tomas Exp $

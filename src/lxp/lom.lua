@@ -1,5 +1,5 @@
 -- See Copyright Notice in license.html
--- $Id: lom.lua,v 1.6 2005-06-09 19:18:40 tuler Exp $
+-- $Id: lom.lua,v 1.6 2005/06/09 19:18:40 tuler Exp $
 
 require "lxp"
 
