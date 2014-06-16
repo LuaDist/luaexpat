@@ -13,13 +13,15 @@
 
 #include "lua.h"
 #include "lauxlib.h"
-#if ! defined (LUA_VERSION_NUM) || LUA_VERSION_NUM < 501
-#include "compat-5.1.h"
-#endif
 
 
 #include "lxplib.h"
 
+
+#if !defined(lua_pushliteral)
+#define lua_pushliteral(L, s)	\
+	lua_pushstring(L, "" s, (sizeof(s)/sizeof(char))-1)
+#endif
 
 
 enum XPState {
@@ -36,6 +38,7 @@ struct lxp_userdata {
   int tableref;  /* table with callbacks for this parser */
   enum XPState state;
   luaL_Buffer *b;  /* to concatenate sequences of cdata pieces */
+  int bufferCharData; /* whether to buffer cdata pieces */
 };
 
 typedef struct lxp_userdata lxp_userdata;
@@ -66,7 +69,7 @@ static lxp_userdata *createlxp (lua_State *L) {
 
 
 static void lxpclose (lua_State *L, lxp_userdata *xpu) {
-  lua_unref(L, xpu->tableref);
+  luaL_unref(L, LUA_REGISTRYINDEX, xpu->tableref);
   xpu->tableref = LUA_REFNIL;
   if (xpu->parser)
     XML_ParserFree(xpu->parser);
@@ -150,8 +153,13 @@ static void f_CharData (void *ud, const char *s, int len) {
   lxp_userdata *xpu = (lxp_userdata *)ud;
   if (xpu->state == XPSok) {
     if (getHandle(xpu, CharDataKey) == 0) return;  /* no handle */
-    xpu->state = XPSstring;
-    luaL_buffinit(xpu->L, xpu->b);
+    if(xpu->bufferCharData != 0) {
+      xpu->state = XPSstring;
+      luaL_buffinit(xpu->L, xpu->b);
+    } else {
+      lua_pushlstring(xpu->L, s, len);
+      docall(xpu, 1, 0);
+    }
   }
   if (xpu->state == XPSstring)
     luaL_addlstring(xpu->b, s, len);
@@ -225,7 +233,7 @@ static int f_ExternaEntity (XML_Parser p, const char *context,
   child->parser = XML_ExternalEntityParserCreate(p, context, NULL);
   if (!child->parser)
     luaL_error(L, "XML_ParserCreate failed");
-  lua_getref(L, xpu->tableref);  /* child uses the same table of its father */
+  lua_rawgeti(L, LUA_REGISTRYINDEX, xpu->tableref); /*lua_getref(L, xpu->tableref); */ /* child uses the same table of its father */
   child->tableref = luaL_ref(L, LUA_REGISTRYINDEX);
   lua_pushstring(L, base);
   lua_pushstring(L, systemId);
@@ -324,6 +332,16 @@ static void f_StartDoctypeDecl (void *ud, const XML_Char *doctypeName,
   docall(xpu, 4, 0);
 }
 
+static void f_XmlDecl (void *ud, const XML_Char *version,
+                                 const XML_Char *encoding,
+                                 int standalone) {
+  lxp_userdata *xpu = (lxp_userdata *)ud;
+  if (getHandle(xpu, XmlDeclKey) == 0) return;  /* no handle */
+  lua_pushstring(xpu->L, version);
+  lua_pushstring(xpu->L, encoding);
+  lua_pushboolean(xpu->L, standalone);
+  docall(xpu, 3, 0);
+}
 /* }====================================================== */
 
 
@@ -344,7 +362,7 @@ static void checkcallbacks (lua_State *L) {
     "Default", "DefaultExpand", "StartElement", "EndElement",
     "ExternalEntityRef", "StartNamespaceDecl", "EndNamespaceDecl",
     "NotationDecl", "NotStandalone", "ProcessingInstruction",
-    "UnparsedEntityDecl", "StartDoctypeDecl", NULL};
+    "UnparsedEntityDecl", "StartDoctypeDecl", "XmlDecl", NULL};
   if (hasfield(L, "_nonstrict")) return;
   lua_pushnil(L);
   while (lua_next(L, 1)) {
@@ -362,8 +380,10 @@ static void checkcallbacks (lua_State *L) {
 
 static int lxp_make_parser (lua_State *L) {
   XML_Parser p;
+  int bufferCharData = (lua_type(L, 3) != LUA_TBOOLEAN) || (lua_toboolean(L, 3) != 0);
   char sep = *luaL_optstring(L, 2, "");
   lxp_userdata *xpu = createlxp(L);
+  xpu->bufferCharData = bufferCharData;
   p = xpu->parser = (sep == '\0') ? XML_ParserCreate(NULL) :
                                     XML_ParserCreateNS(NULL, sep);
   if (!p)
@@ -399,6 +419,8 @@ static int lxp_make_parser (lua_State *L) {
     XML_SetUnparsedEntityDeclHandler(p, f_UnparsedEntityDecl);
   if (hasfield(L, StartDoctypeDeclKey))
     XML_SetStartDoctypeDeclHandler(p, f_StartDoctypeDecl);
+  if (hasfield(L, XmlDeclKey))
+    XML_SetXmlDeclHandler(p, f_XmlDecl);
   return 1;
 }
 
@@ -449,7 +471,7 @@ static int parse_aux (lua_State *L, lxp_userdata *xpu, const char *s,
   xpu->state = XPSok;
   xpu->b = &b;
   lua_settop(L, 2);
-  lua_getref(L, xpu->tableref);  /* to be used by handlers */
+  lua_rawgeti(L, LUA_REGISTRYINDEX, xpu->tableref); /*lua_getref(L, xpu->tableref);*/  /* to be used by handlers */
   status = XML_Parse(xpu->parser, s, (int)len, s == NULL);
   if (xpu->state == XPSstring) dischargestring(xpu);
   if (xpu->state == XPSerror) {  /* callback error? */
@@ -517,11 +539,23 @@ static int lxp_stop (lua_State *L) {
   return 1;
 }
 
-static const struct luaL_reg lxp_meths[] = {
+#if !defined LUA_VERSION_NUM
+/* Lua 5.0 */
+#define luaL_Reg luaL_reg
+#endif
+
+static int lxp_getcurrentbytecount (lua_State* L) {
+  lxp_userdata *xpu = checkparser(L, 1);
+  lua_pushinteger(L, XML_GetCurrentByteCount(xpu->parser));
+  return 1;
+}
+
+static const struct luaL_Reg lxp_meths[] = {
   {"parse", lxp_parse},
   {"close", lxp_close},
   {"__gc", parser_gc},
   {"pos", lxp_pos},
+  {"getcurrentbytecount", lxp_getcurrentbytecount},
   {"setencoding", lxp_setencoding},
   {"getcallbacks", getcallbacks},
   {"getbase", getbase},
@@ -530,7 +564,7 @@ static const struct luaL_reg lxp_meths[] = {
   {NULL, NULL}
 };
 
-static const struct luaL_reg lxp_funcs[] = {
+static const struct luaL_Reg lxp_funcs[] = {
   {"new", lxp_make_parser},
   {NULL, NULL}
 };
@@ -541,25 +575,48 @@ static const struct luaL_reg lxp_funcs[] = {
 */
 static void set_info (lua_State *L) {
 	lua_pushliteral (L, "_COPYRIGHT");
-	lua_pushliteral (L, "Copyright (C) 2003-2007 Kepler Project");
+	lua_pushliteral (L, "Copyright (C) 2003-2012 Kepler Project");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_DESCRIPTION");
 	lua_pushliteral (L, "LuaExpat is a SAX XML parser based on the Expat library");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "LuaExpat 1.2.0");
+	lua_pushliteral (L, "LuaExpat 1.3.0");
 	lua_settable (L, -3);
 }
 
 
-int luaopen_lxp (lua_State *L) {
-  luaL_newmetatable(L, ParserType);
-  lua_pushliteral(L, "__index");
-  lua_pushvalue(L, -2);
-  lua_rawset(L, -3);
-  luaL_openlib (L, NULL, lxp_meths, 0);
-  luaL_openlib (L, "lxp", lxp_funcs, 0);
-  set_info (L);
+#if !defined LUA_VERSION_NUM || LUA_VERSION_NUM==501
+/*
+** Adapted from Lua 5.2.0
+*/
+static void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
+  luaL_checkstack(L, nup, "too many upvalues");
+  for (; l->name != NULL; l++) {  /* fill the table with given functions */
+    int i;
+    for (i = 0; i < nup; i++)  /* copy upvalues to the top */
+      lua_pushvalue(L, -nup);
+    lua_pushstring(L, l->name);
+    lua_pushcclosure(L, l->func, nup);  /* closure with those upvalues */
+    lua_settable(L, -(nup + 3));
+  }
+  lua_pop(L, nup);  /* remove upvalues */
+}
+#endif
 
-  return 1;
+
+int luaopen_lxp (lua_State *L) {
+	luaL_newmetatable(L, ParserType);
+
+	lua_pushliteral(L, "__index");
+	lua_pushvalue(L, -2);
+	lua_rawset(L, -3);
+
+	luaL_setfuncs (L, lxp_meths, 0);
+	lua_pop (L, 1); /* remove metatable */
+
+	lua_newtable (L);
+	luaL_setfuncs (L, lxp_funcs, 0);
+	set_info (L);
+	return 1;
 }
